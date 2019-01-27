@@ -1,0 +1,5 @@
+README.md
+setlx_in_python.egg-info/PKG-INFO
+setlx_in_python.egg-info/SOURCES.txt
+setlx_in_python.egg-info/dependency_links.txt
+setlx_in_python.egg-info/top_level.txt

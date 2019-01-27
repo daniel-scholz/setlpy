@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: setlx-in-python
+Version: 0.0.1
+Summary: setlx functions/classes implemented in python
+Home-page: https://github.com/daniel-scholz/py-sets
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
