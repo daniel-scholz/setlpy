@@ -1,0 +1,5 @@
+README.md
+setlx.egg-info/PKG-INFO
+setlx.egg-info/SOURCES.txt
+setlx.egg-info/dependency_links.txt
+setlx.egg-info/top_level.txt

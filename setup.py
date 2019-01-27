@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="setlx in python",
+    name="setlx",
     version="0.0.1",
     description="setlx functions/classes implemented in python",
     long_description=long_description,
