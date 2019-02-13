@@ -1,4 +1,7 @@
 README.md
+setlx/__init__.py
+setlx/tree.py
+setlx/utils.py
 setlx.egg-info/PKG-INFO
 setlx.egg-info/SOURCES.txt
 setlx.egg-info/dependency_links.txt

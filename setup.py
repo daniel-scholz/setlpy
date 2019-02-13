@@ -9,7 +9,7 @@ setuptools.setup(
     description="setlx functions/classes implemented in python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/daniel-scholz/py-sets",
+    url="https://github.com/daniel-scholz/setlpy",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
