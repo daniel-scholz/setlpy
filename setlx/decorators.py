@@ -2,6 +2,7 @@ from functools import lru_cache as _lru_cache
 from inspect import getfullargspec
 from copy import deepcopy as _deepcopy
 
+
 class cached_procedure:
     def __init__(self, fn):
         self.fn = fn
@@ -24,6 +25,12 @@ class procedure:
         ants = arg_info.annotations
 
         args_cp = []
+        varargs = []
+
+        if arg_info.varargs != None:
+            varargs = _deepcopy(args[len(arg_info.args):])
+            args = args[:len(arg_info.args)]
+
         for i, a in enumerate(args):
             arg_name = arg_info.args[i]
             # only copy value if argument hast read/write annotation
@@ -31,6 +38,8 @@ class procedure:
                 args_cp.append(a)
             else:
                 args_cp.append(_deepcopy(a))
+
+        args_cp += varargs
 
         # arguments which are assigned by name (e.g. x=2)
         kwargs_cp = {}
@@ -42,4 +51,3 @@ class procedure:
                 kwargs_cp[arg_name] = _deepcopy(value)
 
         return self.fn(*args_cp, **kwargs_cp)
-
