@@ -1,5 +1,4 @@
-from functools import lru_cache
-
-cached_procedure = lru_cache(maxsize=None, typed=False)
+from .set_functions import cartesian_product, sum, product
+from .decorators import procedure,cached_procedure
 
 __version__ = "0.0.1"
