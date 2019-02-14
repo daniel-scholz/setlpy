@@ -4,7 +4,7 @@ from itertools import product
 def to_bool(value):
     """
     converts any value to a boolean
-    TODO: check how seltx converts values to booleans
+    TODO: check how setlx converts values to booleans
     """
     return bool(value)
 
@@ -27,7 +27,7 @@ def cartesian(v1, v2):
 
 def iterate(**iterables):
     """
-    TODO: maby own implementation?
+    TODO: maybe own implementation?
     """
     return product(iterables)
 
