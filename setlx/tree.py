@@ -13,25 +13,25 @@ class Tree():
             return self.root.find(key)
 
     def delete(self, key):
-        parent = self
-        if parent.root != None:
-            current = parent.root
-            if current.key == key:
-                nxt = current.right
+        tree = self
+        if tree.root != None:
+            root = tree.root
+            if root.key == key:
                 # check if right subtree is minimum
-                if nxt == None:
-                    parent.root = current.left
+                if root.right == None:
+                    tree.root = root.left
+                elif root.left == None:
+                    tree.root = root.right
                 else:
-                    parent = current
-                    current = current.right
-                    nxt = current.left
-                    if nxt == None:
-                        current.left = parent.left
-                        parent = current
+                    root_right_child = root.right
+                    if root_right_child.left == None:
+                        root.right = root_right_child.right
+                        root.key = root_right_child.key
                     else:
-                        parent.key = current.del_min()
+                        # parent.key = current.del_min()
+                        root.key = root_right_child.del_min()
             else:
-                current.delete(key)
+                tree.root.delete(key)
         else:
             raise ValueError(f"tree is empty")
 
