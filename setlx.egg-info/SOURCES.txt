@@ -3,6 +3,7 @@ setup.py
 setlx/__init__.py
 setlx/decorators.py
 setlx/errors.py
+setlx/math.py
 setlx/node.py
 setlx/set_functions.py
 setlx/tree.py
