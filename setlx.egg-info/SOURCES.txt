@@ -1,5 +1,10 @@
 README.md
+setup.py
 setlx/__init__.py
+setlx/decorators.py
+setlx/errors.py
+setlx/node.py
+setlx/set_functions.py
 setlx/tree.py
 setlx/utils.py
 setlx.egg-info/PKG-INFO
