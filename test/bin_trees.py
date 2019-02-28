@@ -6,9 +6,6 @@ from typing import List
 
 class BinTreeTest(unittest.TestCase):
 
-    """
-    TODO: add negative testing!
-    """
 
     def test_insert_and_find(self):
         dim = 100
@@ -24,7 +21,6 @@ class BinTreeTest(unittest.TestCase):
             self.assertIsNone(t.find(r), msg=f"{t}")
         self.assertIsNone(t.root)
 
-    # TODO: how do i provoke exception
     def test_delete_negative(self):
         dim = 1000
         t, _ = rnd_tree_gen(dim=dim)
