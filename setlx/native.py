@@ -421,8 +421,9 @@ def reverse(*args):
     raise Exception('reverse is not implemented yet')
 
 
-def rnd(*args):
-    raise Exception('rnd is not implemented yet')
+def rnd(iterable):
+    rnd_index = _random.randint(0,len(iterable)-1)
+    return iterable[rnd_index]
 
 
 def round(*args):
