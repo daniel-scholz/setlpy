@@ -1,10 +1,13 @@
 README.md
 setup.py
 setlx/__init__.py
+setlx/built_ins.py
 setlx/decorators.py
 setlx/errors.py
 setlx/math.py
+setlx/native.py
 setlx/node.py
+setlx/set.py
 setlx/set_functions.py
 setlx/tree.py
 setlx/utils.py
