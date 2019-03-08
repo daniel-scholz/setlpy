@@ -4,8 +4,19 @@ import math
 import inspect
 import multiprocessing
 import re
+import os
+import astor
 import random as _random
 import itertools
+import numbers
+import setlx2python.transpiler as transpiler
+
+
+from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
+from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
+from setlx2python.grammar.SetlXgrammarListener import SetlXgrammarListener
+from antlr4 import InputStream, CommonTokenStream
+
 
 _print = print
 _str = str
@@ -13,6 +24,8 @@ _abs = abs
 _int = int
 _max = max
 _min = min
+_eval = eval
+_range = range
 
 
 def abort(*args):
@@ -87,24 +100,36 @@ def endsWith(*args):
     raise Exception('endsWith is not implemented yet')
 
 
-def eval(*args):
-    raise Exception('eval is not supported')
+def eval(code, global_vars=[], local_vars=[]):
+    input = InputStream(code)
+    lexer = SetlXgrammarLexer(input)
+    stream = CommonTokenStream(lexer)
+    parser = SetlXgrammarParser(stream)
+    t = transpiler.Transpiler(parser.expr(False).ex)
+    py_code = astor.to_source(t.to_python(t.root))
+    return _eval(py_code, global_vars, local_vars)
 
 
 def evalTerm(*args):
     raise Exception('evalTerm is not supported')
 
 
-def execute(*args):
-    raise Exception('execute is not supported')
+def execute(code, global_vars=[], local_vars=[]):
+    input = InputStream(code)
+    lexer = SetlXgrammarLexer(input)
+    stream = CommonTokenStream(lexer)
+    parser = SetlXgrammarParser(stream)
+    t = transpiler.Transpiler(parser.block().blk)
+    py_code = astor.to_source(t.transpile())
+    return exec(py_code, global_vars, local_vars)
 
 
 def fct(*args):
     raise Exception('fct is not implemented yet')
 
 
-def first(*args):
-    raise Exception('first is not implemented yet')
+def first(iterable):
+    return iterable[0]
 
 
 def floor(value):
@@ -173,20 +198,21 @@ def isInteger(value):
     return isinstance(value, _int)
 
 
-def isList(*args):
-    raise Exception('isList is not implemented yet')
+def isList(value):
+    return isinstance(value, list)
 
 
 def isMap(*args):
     raise Exception('isMap is not implemented yet')
 
 
-def isNumber(*args):
-    raise Exception('isNumber is not implemented yet')
+def isNumber(n):
+    # bool is int in python (True=0, False=1)
+    return isinstance(n, numbers.Number) and not isinstance(n, bool)
 
 
-def isObject(*args):
-    raise Exception('isObject is not implemented yet')
+def isObject(obj):
+    return inspect.isclass(obj)
 
 
 def isPrime(n):
@@ -202,7 +228,7 @@ def isPrime(n):
 
         sqr = int(math.sqrt(n)) + 1
 
-        for divisor in range(3, sqr, 2):
+        for divisor in _range(3, sqr, 2):
             if n % divisor == 0:
                 return False
         return True
@@ -292,8 +318,12 @@ def last(*args):
     raise Exception('last is not implemented yet')
 
 
-def load(*args):
-    raise Exception('load is not implemented yet')
+def load(file, source_file=""):
+    source = os.path.dirname(os.path.realpath(source_file))
+    path = os.path.join(source, file)
+    path = os.path.splitext(path)[0]+".py"
+    with open(path) as f:
+        exec(f.read())
 
 
 def loadLibrary(*args):
@@ -385,9 +415,9 @@ def printErr(*args):
 def random(n=1.0):
     return _random.random()*n
 
-# TODO  escape this (conflict with python range function)
-# def range(*args):
-#    raise Exception('range is not implemented yet')
+
+def range(*args):
+    raise Exception('range is not implemented yet')
 
 
 def rational(*args):
@@ -422,7 +452,7 @@ def reverse(*args):
 
 
 def rnd(iterable):
-    rnd_index = _random.randint(0,len(iterable)-1)
+    rnd_index = _random.randint(0, len(iterable)-1)
     return iterable[rnd_index]
 
 
