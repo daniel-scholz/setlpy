@@ -7,6 +7,18 @@ class BinaryNode():
     def __str__(self):
         return f"[{self.key},{self.left},{self.right}]"
 
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self
+
+    def __getitem__(self, index):
+        for i, item in enumerate(self._traverse()):
+            if i == index:
+                return item
+        raise IndexError
+
     def insert(self, node):
         if node.key > self.key:
             if self.right != None:
@@ -17,13 +29,13 @@ class BinaryNode():
                 return self.left.insert(node)
             self.left = node
 
-    def find(self, key):
+    def _find(self, key):
         if key == self.key:
-            return self.key
+            return self
         if key < self.key and self.left != None:
-            return self.left.find(key)
+            return self.left._find(key)
         if key > self.key and self.right != None:
-            return self.right.find(key)
+            return self.right._find(key)
 
     def delete(self, key):
         """
@@ -80,3 +92,37 @@ class BinaryNode():
             return k
         else:
             return potential_min.del_min()
+
+    def min(self):
+        if self.left == None:
+            return self.key
+        else:
+            return self.left.min()
+
+    def __eq__(self, other):
+        if other == None:
+            return False
+        key___eq = self.key == other.key
+        left__eq = self.left == other.left
+        right_eq = self.right == other.right
+
+        return key___eq and left__eq and right_eq
+
+    def __le__(self, other):
+        return self.key <= other.key
+
+    def __lt__(self, other):
+        return self.key < other.key
+
+    def __gt__(self, other):
+        return self.key > other.key
+
+    def __ge__(self, other):
+        return self.key >= other.key
+
+    def _traverse(self):
+        if self.left != None:
+            yield from self.left._traverse()
+        yield self
+        if self.right != None:
+            yield from self.right._traverse()
