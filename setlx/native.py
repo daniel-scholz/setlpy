@@ -7,8 +7,10 @@ import time
 import math
 import inspect
 import multiprocessing
+import re
 import random as _random
 import typing
+import itertools
 
 _print = print
 _str = str
@@ -360,8 +362,9 @@ def matches(*args):
     raise Exception('matches is not implemented yet')
 
 
-def mathConst(*args):
-    raise Exception('mathConst is not implemented yet')
+def mathConst(name):
+    # TODO throw error on unknown name
+    return {"pi": math.pi, "e": math.e, "infinity": math.inf}[name]
 
 
 def max(collection):
@@ -376,12 +379,12 @@ def multiLineMode(*args):
     raise Exception('multiLineMode is not implemented yet')
 
 
-def nCPUs(*args): 
+def nCPUs(*args):
     return multiprocessing.cpu_count()
 
 
-def nDecimalPlaces(*args):
-    raise Exception('nDecimalPlaces is not implemented yet')
+def nDecimalPlaces(number, places):
+    return ('{0:.'+str(places)+'f}').format(number)
 
 
 def nPrint(*args):
@@ -412,8 +415,9 @@ def parseStatements(*args):
     raise Exception('parseStatements is not implemented yet')
 
 
-def permutations(*args):
-    raise Exception('permutations is not implemented yet')
+def permutations(iterable):
+    # TODO for sets
+    return list(itertools.permutations(iterable))
 
 
 def pow(*args):
@@ -446,8 +450,11 @@ def read(*args):
     raise Exception('read is not implemented yet')
 
 
-def readFile(*args):
-    raise Exception('readFile is not implemented yet')
+def readFile(file):
+    f = open(file)
+    content = f.readlines()
+    f.close()
+    return content
 
 
 def replace(*args):
@@ -466,8 +473,9 @@ def reverse(*args):
     raise Exception('reverse is not implemented yet')
 
 
-def rnd(*args):
-    raise Exception('rnd is not implemented yet')
+def rnd(iterable):
+    rnd_index = _random.randint(0,len(iterable)-1)
+    return iterable[rnd_index]
 
 
 def round(*args):
@@ -490,8 +498,12 @@ def sort(*args):
     raise Exception('sort is not implemented yet')
 
 
-def split(*args):
-    raise Exception('split is not implemented yet')
+def split(string, pattern):
+    return re.compile(pattern).split(string)
+
+
+def sqrt(n):
+    return math.sqrt(n)
 
 
 def startsWith(*args):
