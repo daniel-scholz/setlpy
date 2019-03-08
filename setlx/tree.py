@@ -74,7 +74,7 @@ class Tree():
     def __str__(self):
         if self.root != None:
             return str(self.root)
-        return "[]"
+        return "{}"
 
     def __eq__(self, other):
         if self.root != None:
