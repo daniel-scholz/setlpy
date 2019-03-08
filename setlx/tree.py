@@ -9,14 +9,17 @@ class Tree():
         """
         returns the iterator object
         """
-        return self.root._traverse()
+        self.current_node = self[0]
+        self.index = 0
+        return self
 
     def __next__(self):
-        # if self.root != None:
-        #     return self.root
-        # else:
-        raise StopIteration
-        # return self
+        if self.index < self.total:
+            self.current_node = self.__getitem__(index=self.index)
+            self.index += 1
+            return self.current_node
+        else:
+            raise StopIteration
 
     def __getitem__(self, index):
         if index < 0:
@@ -63,13 +66,14 @@ class Tree():
         else:
             raise ValueError(f"tree is empty")
 
-    def min(self):
-        if self.root != None:
-            if self.root.left == None:
-                return self.root
-            else:
-                return self.root.min()
-        raise ValueError(f"tree is empty")
+    # def min(self):
+    #     """ returns node with min key"""
+    #     if self.root != None:
+    #         if self.root.left == None:
+    #             return self.root
+    #         else:
+    #             return self.root.min()
+    #     raise ValueError(f"tree is empty")
 
     def __str__(self):
         if self.root != None:

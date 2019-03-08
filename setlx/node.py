@@ -7,12 +7,7 @@ class BinaryNode():
     def __str__(self):
         return f"[{self.key},{self.left},{self.right}]"
 
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        return self
-
+    
     def __getitem__(self, index):
         for i, item in enumerate(self._traverse()):
             if i == index:
@@ -94,8 +89,9 @@ class BinaryNode():
             return potential_min.del_min()
 
     def min(self):
+        """ returns node with min key"""
         if self.left == None:
-            return self.key
+            return self
         else:
             return self.left.min()
 

@@ -11,10 +11,13 @@ class Set():
         # pass
 
     def __iter__(self):
-        return self.tree.__iter__()
+        self.tree.index = 0
+        
+        self.tree.current_node = self.tree[0] # minimum of the tree
+        return self
 
     def __next__(self):
-        return self.tree.__next__()
+        return self.tree.__next__().key
 
     def __arb__(self):
         return NotImplemented
