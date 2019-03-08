@@ -1,17 +1,23 @@
+"""
+module for predefined setlX functions
+"""
+
 import sys
 import time
 import math
 import inspect
 import multiprocessing
 import random as _random
+import typing
 
 _print = print
 _str = str
 _abs = abs
-_char = char
 _int = int
 _max = max
 _min = min
+_pow = pow
+_range = range
 
 
 def abort(*args):
@@ -55,7 +61,7 @@ def ceil(value):
 
 
 def char(value):
-    return _char(value)
+    return chr(value)
 
 
 def clearCache(*args):
@@ -173,15 +179,27 @@ def isInteger(value):
 
 
 def isList(*args):
-    raise Exception('isList is not implemented yet')
+    """
+    checks if list of arguments is a list
+    """
+    for a in args:
+        if not isinstance(a, list):
+            return False
+    return True
 
 
 def isMap(*args):
-    raise Exception('isMap is not implemented yet')
+    """
+    checks if list of arguments is a map(aka dict in Python)
+    """
+    for a in args:
+        if not isinstance(a, dict):
+            return False
+    return True
 
 
-def isNumber(*args):
-    raise Exception('isNumber is not implemented yet')
+def isNumber(value):
+    return isInteger(value) or isDouble(value)
 
 
 def isObject(*args):
@@ -189,7 +207,7 @@ def isObject(*args):
 
 
 def isPrime(n):
-    if not isinstance(n, int):
+    if not isInteger(n):
         return False
     else:
         # Sieve of Eratosthenes.
@@ -207,8 +225,39 @@ def isPrime(n):
         return True
 
 
-def isProbablePrime(*args):
-    raise Exception('isProbablePrime is not implemented yet')
+def isProbablePrime(n, k=15):
+    """
+    based on https://gist.github.com/Ayrx/5884790
+    """
+    # Implementation uses the Miller-Rabin Primality Test
+    # The optimal number of rounds for this test is 40
+    # See http://stackoverflow.com/questions/6325576/how-many-iterations-of-rabin-miller-should-i-use-for-cryptographic-safe-primes
+    # for justification
+
+    # If number is even, it's a composite number
+
+    if n == 2 or n == 3:
+        return True
+
+    if n % 2 == 0:
+        return False
+
+    r, s = 0, n - 1
+    while s % 2 == 0:
+        r += 1
+        s //= 2
+    for _ in _range(k):
+        a = _random.randrange(2, n - 1)
+        x = _pow(a, s, n)
+        if x == 1 or x == n - 1:
+            continue
+        for _ in _range(r - 1):
+            x = _pow(x, 2, n)
+            if x == n - 1:
+                break
+        else:
+            return False
+    return True
 
 
 def isProcedure(*args):
@@ -383,6 +432,8 @@ def random(n=1.0):
     return _random.random()*n
 
 # TODO maybe escape this?
+
+
 def range(*args):
     raise Exception('range is not implemented yet')
 
