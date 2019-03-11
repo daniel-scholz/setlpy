@@ -7,10 +7,10 @@ class Set():
     def __init__(self, arg=None):
         if isinstance(arg, Tree):
             self.tree = arg
-        elif isinstance(arg, BinaryNode):
+        elif isinstance(arg, BinaryNode) or isinstance(arg, int) or arg == None:
             self.tree = Tree(arg)
         else:
-            # try:
+            try:
                 """
                 check if argument for constructor is an iterable like list, set etc.
                 """
@@ -18,9 +18,9 @@ class Set():
                 for element in iter(arg):
                     print(self.tree, element)
                     self.tree.insert(element)
-            # except TypeError:
-            #     raise TypeError(
-            #         f"set cannot be created from {type(arg)}")
+            except TypeError:
+                raise TypeError(
+                    f"set cannot be created from {type(arg)}")
 
     def __iter__(self):
         self.tree.index = 0
@@ -53,6 +53,12 @@ class Set():
     def __str__(self):
         s = {self[i] for i in range(0, self.tree.total)}
         return f"{s}"
+
+    def __add__(self, other):
+        pass
+
+    def __radd__(self, other):
+        pass
 
 
 def arb(s):
