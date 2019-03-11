@@ -7,7 +7,6 @@ class BinaryNode():
     def __str__(self):
         return f"[{self.key},{self.left},{self.right}]"
 
-    
     def __getitem__(self, index):
         for i, item in enumerate(self._traverse()):
             if i == index:
@@ -96,13 +95,23 @@ class BinaryNode():
             return self.left.min()
 
     def __eq__(self, other):
-        if other == None:
-            return False
-        key___eq = self.key == other.key
-        left__eq = self.left == other.left
-        right_eq = self.right == other.right
+        o_none, s_none = False, False
+        try:  # if other == None
+            _ = other.key
+        except AttributeError:
+            o_none = True  # other == None
+        try:  # if self == None
+            _ = self.key
+        except AttributeError:
+            s_none = True  # self == None
 
-        return key___eq and left__eq and right_eq
+        if not s_none and not o_none:
+            key___eq = self.key == other.key
+            left__eq = self.left == other.left
+            right_eq = self.right == other.right
+            return key___eq and left__eq and right_eq
+
+        return o_none and s_none
 
     def __le__(self, other):
         return self.key <= other.key
@@ -120,5 +129,6 @@ class BinaryNode():
         if self.left != None:
             yield from self.left._traverse()
         yield self
+        # print(self)
         if self.right != None:
             yield from self.right._traverse()

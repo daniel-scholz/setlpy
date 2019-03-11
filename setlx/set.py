@@ -4,16 +4,27 @@ from setlx.node import BinaryNode
 
 class Set():
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
-    def __init__(self, arg):
-        self.tree = arg
-        self.index = 0
-        self.current_node = self.tree.root
-        # pass
+    def __init__(self, arg=None):
+        if isinstance(arg, Tree):
+            self.tree = arg
+        elif isinstance(arg, BinaryNode):
+            self.tree = Tree(arg)
+        else:
+            # try:
+                """
+                check if argument for constructor is an iterable like list, set etc.
+                """
+                self.tree = Tree()
+                for element in iter(arg):
+                    print(self.tree, element)
+                    self.tree.insert(element)
+            # except TypeError:
+            #     raise TypeError(
+            #         f"set cannot be created from {type(arg)}")
 
     def __iter__(self):
         self.tree.index = 0
-        
-        self.tree.current_node = self.tree[0] # minimum of the tree
+        self.tree.current_node = self.tree[0]  # minimum of the tree
         return self
 
     def __next__(self):

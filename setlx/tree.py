@@ -1,8 +1,12 @@
+from setlx.node import BinaryNode
+
+
 class Tree():
     def __init__(self, node=None):
         self.root = None
         self.total = 0
-        self.insert(node)  # ensures that total count is correct
+        if node != None:
+            self.insert(node)  # ensures that total count is correct
     """Technically speaking, Python iterator object must implement two special methods, __iter__() and __next__(), collectively called the iterator protocol.(https://www.programiz.com/python-programming/iterator)"""
 
     def __iter__(self):
@@ -27,6 +31,8 @@ class Tree():
         return self.root.__getitem__(index)
 
     def insert(self, node):
+        if not isinstance(node, BinaryNode):
+            node = BinaryNode(node)
         if self.root == None:
             self.root = node
         else:
@@ -90,7 +96,6 @@ class Tree():
         # https://stackoverflow.com/questions/8991840/recursion-using-yield
         # yield self.root
         yield from self.root._traverse()
-        # yield x
 
     def __le__(self, other):  # a.k.a. is_subset
         """
@@ -99,8 +104,7 @@ class Tree():
         other is subset of self; all elements of self are in other
         """
         #root_eq = other.find(self.root.key)
-        all_nodes = self._traverse()
-        for node in all_nodes:
+        for node in self._traverse():
             # print(node)
             if not other.find(node.key):
                 return False
