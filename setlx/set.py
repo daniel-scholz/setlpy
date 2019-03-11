@@ -1,5 +1,7 @@
-from setlx.tree import Tree
 from setlx.node import BinaryNode
+from setlx.tree import Tree
+
+import copy
 
 
 class Set():
@@ -33,7 +35,14 @@ class Set():
         return NotImplemented
 
     def __getitem__(self, index):
-        item = self.tree.__getitem__(index)
+        if isinstance(index, slice):
+            start = index.start if index.start != None else 0
+            stop = index.stop if index.step != None else self.tree.total
+            step = index.step if index.step != None else 1
+            print(index)
+            return Set(self[i] for i in range(start, stop, step))
+        else:
+            item = self.tree.__getitem__(index)
         return item.key if isinstance(item, BinaryNode) else item
 
     def __len__(self):
@@ -84,19 +93,32 @@ class Set():
         return self
 
     def __mul__(self, other):
-        pass
+        if not isinstance(other, Set):
+            raise TypeError(f"could not intersect set and {type(other)}")
+        else:
+            others = iter(other)  # raises TypeError if not castable
+            return Set(x for x in others if x in self)
 
-    def __matmul__(self, other):
-        pass
+    # matrizen mulitplikation "@" operator
+    # def __matmul__(self, other):
+        # pass
 
+    # /
     def __truediv__(self, other):
-        pass
+        raise NotImplementedError
+    # //, interger division
 
     def __floordiv__(self, other):
-        pass
+        raise NotImplementedError
 
+    # %
     def __mod__(self, other):
-        pass
+        # TODO: find other solution
+        # self_copy = copy.deepcopy(self)
+        self_copy = self[:]
+        s1 = (self - other)
+        s2 = (other - self_copy)
+        return s1 + s2
 
     def __divmod__(self, other):
         pass

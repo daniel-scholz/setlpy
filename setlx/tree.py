@@ -103,7 +103,7 @@ class Tree():
         implements check for subset, NOT real less or equal
         other is subset of self; all elements of self are in other
         """
-        #root_eq = other.find(self.root.key)
+        # root_eq = other.find(self.root.key)
         for node in self._traverse():
             if not other.find(node.key):
                 return False

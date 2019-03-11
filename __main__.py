@@ -6,8 +6,9 @@ import random
 
 # trees need to be iterable in order to work
 
-my_set = Set(range(2, 10))
-my_set += Set(range(11, 100, 10))
-print(my_set)  # {2, 3, 4, 5, 6, 7, 8, 9, 11, 21, 31, 41, 51, 61, 71, 81, 91}
-my_set -= Set(range(51, 100, 10))
-print(my_set)  # {2, 3, 4, 5, 6, 7, 8, 9, 11, 21, 31, 41}
+my_set = Set(range(1, 4))
+print(my_set)
+my_set2 = Set(range(3, 6))
+print(my_set2)
+
+print(my_set % my_set2)
