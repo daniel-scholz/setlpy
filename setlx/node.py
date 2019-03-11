@@ -129,6 +129,5 @@ class BinaryNode():
         if self.left != None:
             yield from self.left._traverse()
         yield self
-        # print(self)
         if self.right != None:
             yield from self.right._traverse()

@@ -16,7 +16,6 @@ class Set():
                 """
                 self.tree = Tree()
                 for element in iter(arg):
-                    print(self.tree, element)
                     self.tree.insert(element)
             except TypeError:
                 raise TypeError(
@@ -51,13 +50,67 @@ class Set():
         return self[-1]
 
     def __str__(self):
-        s = {self[i] for i in range(0, self.tree.total)}
-        return f"{s}"
+        return "{" + ", ".join(str(self[i]) for i in range(0, self.tree.total))+"}"
+
+    """https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types"""
 
     def __add__(self, other):
+        if isinstance(other, int):
+            self.tree.insert(other)
+        else:
+            try:
+                others = iter(other)  # raises TypeError if not castable
+                for o in others:
+                    self.tree.insert(o)
+            except (TypeError):
+                raise TypeError(
+                    f"items of type {type(other)} cannot be add to set")
+            # raise NotImplementedError()
+        return self
+
+    def __sub__(self, other):
+        if isinstance(other, int):
+            self.tree.delete(other)
+        else:
+            try:
+                others = iter(other)  # raises TypeError if not castable
+                for o in others:
+                    if o in self:
+                        self.tree.delete(o)
+            except (TypeError):
+                raise TypeError(
+                    f"items of type {type(other)} cannot be removed from set")
+            # raise NotImplementedError()
+        return self
+
+    def __mul__(self, other):
         pass
 
-    def __radd__(self, other):
+    def __matmul__(self, other):
+        pass
+
+    def __truediv__(self, other):
+        pass
+
+    def __floordiv__(self, other):
+        pass
+
+    def __mod__(self, other):
+        pass
+
+    def __divmod__(self, other):
+        pass
+
+    def __pow__(self, other, modulo=None):
+        pass
+
+    def __and__(self, other):
+        pass
+
+    def __xor__(self, other):
+        pass
+
+    def __or__(self, other):
         pass
 
 

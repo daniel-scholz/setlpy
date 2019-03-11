@@ -105,7 +105,6 @@ class Tree():
         """
         #root_eq = other.find(self.root.key)
         for node in self._traverse():
-            # print(node)
             if not other.find(node.key):
                 return False
         return True

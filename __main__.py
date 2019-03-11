@@ -4,17 +4,10 @@ from setlx.tree import Tree
 from setlx.set import Set
 import random
 
-numbers = [2, 12, 1]
-
-o = Tree(10)
-print(o)
-s = Tree(BinaryNode(10))
-for n in numbers:
-    o.insert(n)
-    s.insert(n)
 # trees need to be iterable in order to work
-print(s > o)
 
-# random.Random(42).shuffle(my_list)
-my_set = Set(i for i in range(0, 10))
-print(my_set)
+my_set = Set(range(2, 10))
+my_set += Set(range(11, 100, 10))
+print(my_set)  # {2, 3, 4, 5, 6, 7, 8, 9, 11, 21, 31, 41, 51, 61, 71, 81, 91}
+my_set -= Set(range(51, 100, 10))
+print(my_set)  # {2, 3, 4, 5, 6, 7, 8, 9, 11, 21, 31, 41}
