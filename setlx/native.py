@@ -32,7 +32,7 @@ _min = min
 _eval = eval
 _pow = pow
 _range = range
-
+_round = round
 
 def abort(*args):
     raise Exception('abort is not implemented yet')
@@ -45,9 +45,16 @@ def abs(value):
 def appendFile(*args):
     raise Exception('appendFile is not implemented yet')
 
-
-def arb(*args):
-    raise Exception('arb is not implemented yet')
+_arb_index = 0 
+def arb(iterable):
+    try:
+        # TODO implement __arb__ for sets
+        return iterable.__arb__()
+    except:
+        global _arb_index
+        value = iterable[_arb_index]
+        _arb_index = 0 if _arb_index == -1 else 0
+        return value
 
 
 def args(*args):
@@ -62,8 +69,9 @@ def atan2(*args):
     raise Exception('atan2 is not implemented yet')
 
 
-def cacheStats(*args):
-    raise Exception('cacheStats is not implemented yet')
+def cacheStats(fn):
+    # TODO wrap in setlx structures
+    return fn.cache.cache_info()
 
 
 def canonical(*args):
@@ -89,6 +97,9 @@ def collect(*args):
 def compare(*args):
     raise Exception('compare is not implemented yet')
 
+
+def cos(value):
+    return math.cos(value)
 
 def deleteFile(*args):
     raise Exception('deleteFile is not implemented yet')
@@ -129,6 +140,8 @@ def execute(code, global_vars=[], local_vars=[]):
     py_code = astor.to_source(t.transpile())
     return exec(py_code, global_vars, local_vars)
 
+def exp(value):
+    return math.exp(value)
 
 def fct(*args):
     raise Exception('fct is not implemented yet')
@@ -357,8 +370,12 @@ def la_vector(*args):
     raise Exception('la_vector is not implemented yet')
 
 
-def last(*args):
-    raise Exception('last is not implemented yet')
+def last(collection):
+    try:
+        # TODO implement __last__ for sets
+        return collection.__last__()
+    except:
+        return collection[-1]
 
 
 def load(file, source_file=""):
@@ -371,6 +388,10 @@ def load(file, source_file=""):
 
 def loadLibrary(*args):
     raise Exception('loadLibrary is not implemented yet')
+
+
+def log(value):
+    return math.log(value)
 
 
 def logo(*args):
@@ -458,7 +479,7 @@ def printErr(*args):
 def random(n=1.0):
     return _random.random()*n
 
-def range(*args):
+def range(map):
     raise Exception('range is not implemented yet')
 
 
@@ -498,13 +519,15 @@ def rnd(iterable):
     return iterable[rnd_index]
 
 
-def round(*args):
-    raise Exception('round is not implemented yet')
+def round(n):
+    return _round(n)
 
 
 def run(*args):
     raise Exception('run is not implemented yet')
 
+def sin(value):
+    return math.sin(value)
 
 def shuffle(*args):
     raise Exception('shuffle is not implemented yet')
