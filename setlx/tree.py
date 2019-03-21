@@ -35,9 +35,9 @@ class Tree():
             node = BinaryNode(node)
         if self.root == None:
             self.root = node
+            self.total += 1
         else:
-            self.root.insert(node)
-        self.total += 1
+            self.total += self.root.insert(node)
 
     def _find(self, key):
         if self.root != None:
@@ -87,7 +87,7 @@ class Tree():
         return "{}"
 
     def __eq__(self, other):
-        if self.root != None:
+        if self.root != None or other.root != None:
             return self.root == other.root
         else:  # elif other == None:
             return False
@@ -103,11 +103,16 @@ class Tree():
         implements check for subset, NOT real less or equal
         other is subset of self; all elements of self are in other
         """
-        # root_eq = other.find(self.root.key)
-        for node in self._traverse():
-            if not other.find(node.key):
-                return False
-        return True
+        if self.root == None:  # left set is empty
+            return True
+        if other.root == None:  # right set is empty
+            return False
+        if other.root != None and self.root != None:
+            # root_eq = other.find(self.root.key)
+            for node in self._traverse():
+                if not other.find(node.key):
+                    return False
+            return True
 
     def __lt__(self, other):
         """

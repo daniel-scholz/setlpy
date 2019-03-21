@@ -2,14 +2,15 @@ from setlx.node import BinaryNode
 from setlx.tree import Tree
 
 import copy
+from types import GeneratorType
 
 
 class Set():
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
     def __init__(self, arg=None):
-        if isinstance(arg, Tree):
+        if isinstance(arg, Tree):  # not sure if this is necessary
             self.tree = arg
-        elif isinstance(arg, BinaryNode) or isinstance(arg, int) or arg == None:
+        elif not isinstance(arg, (GeneratorType)) or arg == None:
             self.tree = Tree(arg)
         else:
             try:
@@ -39,10 +40,8 @@ class Set():
             start = index.start if index.start != None else 0
             stop = index.stop if index.step != None else self.tree.total
             step = index.step if index.step != None else 1
-            print(index)
             return Set(self[i] for i in range(start, stop, step))
-        else:
-            item = self.tree.__getitem__(index)
+        item = self.tree[index]
         return item.key if isinstance(item, BinaryNode) else item
 
     def __len__(self):
@@ -50,13 +49,13 @@ class Set():
 
     def __from__(self):
         # look up SetlX implementation
-        return self[0]
+        return self.tree[0]
 
     def first(self):
-        return self[0]
+        return self.tree[0]
 
     def last(self):
-        return self[-1]
+        return self.tree[-1]
 
     def __str__(self):
         return "{" + ", ".join(str(self[i]) for i in range(0, self.tree.total))+"}"
@@ -64,76 +63,93 @@ class Set():
     """https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types"""
 
     def __add__(self, other):
-        if isinstance(other, int):
+        # add elements/ union of two sets
+        # if isinstance(other, Set):
+        #     for node in other:
+        #         self.tree.insert(node)
+        # el
+        if not isinstance(other, (Set, Tree)):
             self.tree.insert(other)
         else:
-            try:
-                others = iter(other)  # raises TypeError if not castable
-                for o in others:
+            for o in other:
+                try:
                     self.tree.insert(o)
-            except (TypeError):
-                raise TypeError(
-                    f"items of type {type(other)} cannot be add to set")
-            # raise NotImplementedError()
+                except TypeError:
+                    raise TypeError(
+                        f"items of type {type(o)} cannot be add to set of type {type(min(self))}")
         return self
 
     def __sub__(self, other):
-        if isinstance(other, int):
+        # remove from self
+        if not isinstance(other, (Set, Tree)):
             self.tree.delete(other)
         else:
-            try:
-                others = iter(other)  # raises TypeError if not castable
-                for o in others:
-                    if o in self:
+            for o in other:
+                if o in self:
+                    try:
                         self.tree.delete(o)
-            except (TypeError):
-                raise TypeError(
-                    f"items of type {type(other)} cannot be removed from set")
-            # raise NotImplementedError()
+                    except (ValueError):
+                        raise TypeError(
+                            f"could not delete {o} from set")
         return self
 
     def __mul__(self, other):
+        # intersection
         if not isinstance(other, Set):
             raise TypeError(f"could not intersect set and {type(other)}")
         else:
             others = iter(other)  # raises TypeError if not castable
             return Set(x for x in others if x in self)
 
-    # matrizen mulitplikation "@" operator
+    # matrix multiplication; "@" operator
     # def __matmul__(self, other):
         # pass
 
-    # /
-    def __truediv__(self, other):
-        raise NotImplementedError
-    # //, interger division
-
-    def __floordiv__(self, other):
-        raise NotImplementedError
-
-    # %
     def __mod__(self, other):
-        # TODO: find other solution
-        # self_copy = copy.deepcopy(self)
+        # “%” computes the symmetric difference of two sets.
         self_copy = self[:]
         s1 = (self - other)
         s2 = (other - self_copy)
         return s1 + s2
 
-    def __divmod__(self, other):
-        pass
-
     def __pow__(self, other, modulo=None):
+        # ** operator
         pass
 
     def __and__(self, other):
         pass
 
     def __xor__(self, other):
-        pass
+        # ^
+        return self % other
 
-    def __or__(self, other):
-        pass
+    def __le__(self, other):  # a.k.a. is_subset
+        """
+        corresponds to self <= other
+        implements check for subset, NOT real less or equal
+        other is subset of self; all elements of self are in other
+        """
+        if other != None and self != None:
+            return self.tree <= other.tree
+        return False
+
+    def __lt__(self, other):
+        """
+        implements check for real subset, NOT real less
+        """
+        return self != other and self <= other
+
+    def __gt__(self, other):
+        """
+        returns self > other
+        """
+        return other < self
+
+    def __ge__(self, other):
+        """
+        returns self >= other
+        """
+        return other <= self
 
 
 def arb(s):

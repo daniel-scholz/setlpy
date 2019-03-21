@@ -18,10 +18,14 @@ class BinaryNode():
             if self.right != None:
                 return self.right.insert(node)
             self.right = node
-        else:
+            return 1
+        elif node.key < self.key:
             if self.left != None:
                 return self.left.insert(node)
             self.left = node
+            return 1
+        
+        return 0
 
     def _find(self, key):
         if key == self.key:
