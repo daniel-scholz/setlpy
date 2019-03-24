@@ -106,7 +106,7 @@ def endsWith(*args):
     raise Exception('endsWith is not implemented yet')
 
 
-def eval(code, global_vars=[], local_vars=[]):
+def eval(code, global_vars={}, local_vars={}):
     input = InputStream(code)
     lexer = SetlXgrammarLexer(input)
     stream = CommonTokenStream(lexer)
@@ -145,6 +145,7 @@ def floor(value):
 
 
 def v_from(*args):
+    # return NotImplented 
     raise Exception('v_from is not implemented yet')
 
 
