@@ -43,6 +43,7 @@ class Set():
         else:
             return self.tree[-1].key
 
+
     def __getitem__(self, index):
         if isinstance(index, slice):
             start = index.start if index.start != None else 0
@@ -69,7 +70,8 @@ class Set():
         return "{" + ", ".join("'" + self[i].key + "'" if type(self[i].key) == str else str(self[i]) for i in range(0, self.tree.total))+"}"
 
     def __repr__(self):
-        return str(self)
+        return self.__str__()
+
     """https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types"""
 
     def __add__(self, other):

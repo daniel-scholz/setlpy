@@ -11,6 +11,7 @@ setlx/set.py
 setlx/set_functions.py
 setlx/tree.py
 setlx/utils.py
+setlx/vector.py
 setlx.egg-info/PKG-INFO
 setlx.egg-info/SOURCES.txt
 setlx.egg-info/dependency_links.txt

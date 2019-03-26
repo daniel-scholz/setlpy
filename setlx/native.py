@@ -13,9 +13,15 @@ import astor
 import random as _random
 import typing
 import itertools
-import numbers
+import platform
 import setlx2python.transpiler as transpiler
+from copy import deepcopy
+from collections import Counter
 
+from .vector import Vector
+from .matrix import Matrix
+from .utils import is_number, is_integer
+from .set import Set
 
 from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
 from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
@@ -34,8 +40,8 @@ _pow = pow
 _range = range
 _round = round
 
-def abort(*args):
-    raise Exception('abort is not implemented yet')
+def abort(msg):
+    raise Exception(msg)
 
 
 def abs(value):
@@ -43,30 +49,32 @@ def abs(value):
 
 
 def appendFile(*args):
-    raise Exception('appendFile is not implemented yet')
+    raise NotImplementedError('appendFile is not implemented yet')
 
-_arb_index = 0 
-def arb(iterable):
+
+
+def arb(value):
+    if isinstance(value, (list, _str)):
+        size = len(value)
+        index = 0 if size % 2 == 0 else -1
+        v = value[index]
+        return v
     try:
-        # TODO implement __arb__ for sets
-        return iterable.__arb__()
+        return value.__arb__()
     except:
-        global _arb_index
-        value = iterable[_arb_index]
-        _arb_index = 0 if _arb_index == -1 else 0
-        return value
+        raise Exception(f"Argument '{value}' is not a collection value.")
 
 
-def args(*args):
-    raise Exception('args is not implemented yet')
+def args(term):
+    raise Exception('args is not supported')
 
 
 def ask(*args):
-    raise Exception('ask is not implemented yet')
+    raise NotImplementedError('ask is not implemented yet')
 
 
-def atan2(*args):
-    raise Exception('atan2 is not implemented yet')
+def atan2(y, x):
+    return math.atan2(y, x)
 
 
 def cacheStats(fn):
@@ -74,8 +82,9 @@ def cacheStats(fn):
     return fn.cache.cache_info()
 
 
-def canonical(*args):
-    raise Exception('canonical is not implemented yet')
+
+def canonical(term):
+    raise Exception('canonical is not supported')
 
 
 def ceil(value):
@@ -86,38 +95,43 @@ def char(value):
     return chr(value)
 
 
-def clearCache(*args):
-    raise Exception('clearCache is not implemented yet')
+def clearCache(cached_procedure):
+    raise NotImplementedError('clearCache is not implemented yet')
 
 
-def collect(*args):
-    raise Exception('collect is not implemented yet')
+def collect(list):
+    dic = Counter(list)
+    return Set([[key, dic[key]] for key in dic])
 
 
 def compare(*args):
-    raise Exception('compare is not implemented yet')
+    raise NotImplementedError('compare is not implemented yet')
 
 
 def cos(value):
     return math.cos(value)
 
-def deleteFile(*args):
-    raise Exception('deleteFile is not implemented yet')
+def deleteFile(path):
+    try:
+        os.remove(path)
+        return True
+    except:
+        return False
 
 
-def domain(*args):
-    raise Exception('domain is not implemented yet')
+def domain(set):
+    return set.__domain__()
 
 
 def double(value):
     return float(value)
 
 
-def endsWith(*args):
-    raise Exception('endsWith is not implemented yet')
+def endsWith(string, suffix):
+    return string.endswith(suffix)
 
 
-def eval(code, global_vars=[], local_vars=[]):
+def eval(code, global_vars={}, local_vars={}):
     input = InputStream(code)
     lexer = SetlXgrammarLexer(input)
     stream = CommonTokenStream(lexer)
@@ -127,7 +141,7 @@ def eval(code, global_vars=[], local_vars=[]):
     return _eval(py_code, global_vars, local_vars)
 
 
-def evalTerm(*args):
+def evalTerm(term):
     raise Exception('evalTerm is not supported')
 
 
@@ -144,11 +158,17 @@ def exp(value):
     return math.exp(value)
 
 def fct(*args):
-    raise Exception('fct is not implemented yet')
+    raise NotImplementedError('fct is not implemented yet')
 
 
-def first(iterable):
-    return iterable[0]
+def first(value):
+    if isinstance(value, (list, _str)):
+        return value[0]
+    try:
+        return value.first()
+    except:
+        raise Exception(
+            f"Can not get last member from operand; '{value}' is not a collection value.")
 
 
 def floor(value):
@@ -157,36 +177,59 @@ def floor(value):
 # This is the setlx from function. renamed because "from" is a python keword
 
 
-def v_from(*args):
-    raise Exception('v_from is not implemented yet')
+def v_from(value):
+    if isinstance(value, (list, _str)):
+        size = len(value)
+        index = 0 if size % 2 == 0 else -1
+        v = value[index]
+        del value[index]
+        return v
+    try:
+        return value.__from__()
+    except:
+        raise Exception(f"Argument '{value}' is not a collection value.")
 
 
-def fromB(*args):
-    raise Exception('fromB is not implemented yet')
+def fromB(value):
+    if isinstance(value, (list, _str)):
+        v = value[0]
+        del value[0]
+        return v
+    try:
+        return value.__fromB__()
+    except:
+        raise Exception(f"Argument '{value}' is not a collection value.")
 
 
-def fromE(*args):
-    raise Exception('fromE is not implemented yet')
+def fromE(value):
+    if isinstance(value, (list, _str)):
+        v = value[-1]
+        del value[-1]
+        return v
+    try:
+        return value.__fromE__()
+    except:
+        raise Exception(f"Argument '{value}' is not a collection value.")
 
 
 def get(*args):
-    raise Exception('get is not implemented yet')
+    raise NotImplementedError('get is not implemented yet')
 
 
-def getOsID(*args):
-    raise Exception('getOsID is not implemented yet')
+def getOsID():
+    return f"{platform.system()} {platform.release()}"
 
 
-def getScope(*args):
-    raise Exception('getScope is not implemented yet')
+def getScope(term):
+    raise Exception('getScope is not supported')
 
 
-def getTerm(*args):
-    raise Exception('getTerm is not implemented yet')
+def getTerm(term):
+    raise Exception('getTerm is not supported')
 
 
-def hypot(*args):
-    raise Exception('hypot is not implemented yet')
+def hypot(x, y):
+    return sqrt(x**2+y**2)
 
 
 def int(value):
@@ -205,8 +248,8 @@ def isDouble(value):
     return isinstance(value, float)
 
 
-def isError(*args):
-    raise Exception('isError is not implemented yet')
+def isError(value):
+    return isinstance(value, Exception)
 
 
 def isInfinite(value):
@@ -214,7 +257,7 @@ def isInfinite(value):
 
 
 def isInteger(value):
-    return isinstance(value, _int)
+    return is_integer(value)
 
 
 def isList(value):
@@ -232,8 +275,7 @@ def isMap(*args):
 
 
 def isNumber(n):
-    # bool is int in python (True=0, False=1)
-    return isinstance(n, numbers.Number) and not isinstance(n, bool)
+    return is_number(n)
 
 
 def isObject(obj):
@@ -294,16 +336,16 @@ def isProbablePrime(n, k=15):
     return True
 
 
-def isProcedure(*args):
-    raise Exception('isProcedure is not implemented yet')
+def isProcedure(value):
+    return hasattr(value, '__call__')
 
 
-def isRational(*args):
-    raise Exception('isRational is not implemented yet')
+def isRational(n):
+    return not isinstance(n, complex)
 
 
-def isSet(*args):
-    raise Exception('isSet is not implemented yet')
+def isSet(value):
+    return isinstance(value, Set)
 
 
 def isString(value):
@@ -315,68 +357,79 @@ def isTerm(*args):
 
 
 def isVariable(*args):
-    raise Exception('isVariable is not implemented yet')
+    raise NotImplementedError('isVariable is not implemented yet')
 
 
-def join(*args):
-    raise Exception('join is not implemented yet')
+def join(collection, seperator):
+    return seperator.join([str(c) for c in collection])
 
 
-def la_cond(*args):
-    raise Exception('la_cond is not implemented yet')
+def la_cond(matrix):
+    return matrix.__cond__()  # TODO
 
 
-def la_det(*args):
-    raise Exception('la_det is not implemented yet')
+def la_det(matrix):
+    return matrix.__det__()  # TODO
 
 
 def la_eigenValues(*args):
-    raise Exception('la_eigenValues is not implemented yet')
+    raise NotImplementedError('la_eigenValues is not implemented yet')
 
 
 def la_eigenVectors(*args):
-    raise Exception('la_eigenVectors is not implemented yet')
+    raise NotImplementedError('la_eigenVectors is not implemented yet')
 
 
 def la_hadamard(*args):
-    raise Exception('la_hadamard is not implemented yet')
+    raise NotImplementedError('la_hadamard is not implemented yet')
 
 
-def la_isMatrix(*args):
-    raise Exception('la_isMatrix is not implemented yet')
+def la_isMatrix(value):
+    return isinstance(value, Matrix)
 
 
-def la_isVector(*args):
-    raise Exception('la_isVector is not implemented yet')
+def la_isVector(value):
+    return isinstance(value, Vector)
 
 
-def la_matrix(*args):
-    raise Exception('la_matrix is not implemented yet')
+def la_matrix(value):
+    if isinstance(value, list):
+        return Matrix(value)
+    elif isinstance(value, Vector):
+        return Matrix([x for x in value.to_list()])
+    raise Exception(
+        "Matrices can only be created from collections or vectors.")
 
 
 def la_pseudoInverse(*args):
-    raise Exception('la_pseudoInverse is not implemented yet')
+    raise NotImplementedError('la_pseudoInverse is not implemented yet')
 
 
 def la_solve(*args):
-    raise Exception('la_solve is not implemented yet')
+    raise NotImplementedError('la_solve is not implemented yet')
 
 
 def la_svd(*args):
-    raise Exception('la_svd is not implemented yet')
+    raise NotImplementedError('la_svd is not implemented yet')
 
 
-def la_vector(*args):
-    raise Exception('la_vector is not implemented yet')
+def la_vector(value):
+    if isinstance(value, list):
+        return Vector(value)
+    elif isinstance(value, Matrix):
+        return value.to_vector()
+    raise Exception(
+        "Vectors can only be created from collections or matrices.")
 
 
-def last(collection):
+  def last(value):
+    if isinstance(value, (list, _str)):
+        return value[-1]
     try:
-        # TODO implement __last__ for sets
-        return collection.__last__()
+        return value.last()
     except:
-        return collection[-1]
-
+        raise Exception(
+            f"Can not get last member from operand; '{value}' is not a collection value.")
 
 def load(file, source_file=""):
     source = os.path.dirname(os.path.realpath(source_file))
@@ -387,7 +440,7 @@ def load(file, source_file=""):
 
 
 def loadLibrary(*args):
-    raise Exception('loadLibrary is not implemented yet')
+    raise NotImplementedError('loadLibrary is not implemented yet')
 
 
 def log(value):
@@ -395,20 +448,26 @@ def log(value):
 
 
 def logo(*args):
-    raise Exception('logo is not implemented yet')
+    raise Exception('logo is not supported')
 
 
 def makeTerm(*args):
-    raise Exception('makeTerm is not implemented yet')
+    raise Exception('makeTerm is not supported')
 
 
-def matches(*args):
-    raise Exception('matches is not implemented yet')
+def matches(string, pattern, captureGroups=False):
+    match = re.match(pattern, string)
+    if captureGroups:
+        raise Exception('captureGroups is not supported')
+    return match != None
 
 
 def mathConst(name):
-    # TODO throw error on unknown name
-    return {"pi": math.pi, "e": math.e, "infinity": math.inf}[name]
+    try:
+        return {"pi": math.pi, "e": math.e, "infinity": math.inf}[name.lower()]
+    except:
+        raise Exception(
+            f"Name-argument {name} is not a known constant or not a string.")
 
 
 def max(collection):
@@ -420,7 +479,7 @@ def min(collection):
 
 
 def multiLineMode(*args):
-    raise Exception('multiLineMode is not implemented yet')
+    raise Exception('multiLineMode is not supported')
 
 
 def nCPUs(*args):
@@ -439,24 +498,53 @@ def nPrintErr(*args):
     _print(*args, sep=" ", end="", file=sys.stderr)
 
 
-def nextPermutation(*args):
-    raise Exception('nextPermutation is not implemented yet')
+def nextPermutation(list):
+    if len(list) < 2:
+        return None
+
+    p = list[::]
+
+    a = len(p) - 2
+    while a >= 0 and p[a] >= p[a + 1]:
+        a -= 1
+
+    if a == -1:
+        return None
+
+    b = len(p) - 1
+    while p[b] <= p[a]:
+        b -= 1
+
+    tmp = p[a]
+    p[a] = p[b]
+    p[b] = tmp
+
+    i = a + 1
+    j = len(p) - 1
+    while i < j:
+        tmp = p[i]
+        p[i] = p[j]
+        p[j] = tmp
+        i += 1
+        j += 1
+
+    return p
 
 
 def nextProbablePrime(*args):
-    raise Exception('nextProbablePrime is not implemented yet')
+    raise NotImplementedError('nextProbablePrime is not implemented yet')
 
 
 def now():
-    return int(round(time.time() * 1000))
+    return int(_round(time.time() * 1000))
 
 
 def parse(*args):
-    raise Exception('parse is not implemented yet')
+    raise Exception('parse is not supported')
 
 
 def parseStatements(*args):
-    raise Exception('parseStatements is not implemented yet')
+    raise Exception('parseStatements is not supported')
 
 
 def permutations(iterable):
@@ -464,8 +552,8 @@ def permutations(iterable):
     return list(itertools.permutations(iterable))
 
 
-def pow(*args):
-    raise Exception('pow is not implemented yet')
+def pow(set):
+    return set.__pow_set__()  # TODO
 
 
 def print(*args):
@@ -479,16 +567,17 @@ def printErr(*args):
 def random(n=1.0):
     return _random.random()*n
 
-def range(map):
-    raise Exception('range is not implemented yet')
+
+def range(map):  # map is set
+    return map.__range__()
 
 
 def rational(*args):
-    raise Exception('rational is not implemented yet')
+    raise NotImplementedError('rational is not implemented yet')
 
 
 def read(*args):
-    raise Exception('read is not implemented yet')
+    raise NotImplementedError('read is not implemented yet')
 
 
 def readFile(file):
@@ -498,20 +587,22 @@ def readFile(file):
     return content
 
 
-def replace(*args):
-    raise Exception('replace is not implemented yet')
+def replace(string, pattern, replacement):
+    return re.sub(pattern, replacement, string)
 
 
-def replaceFirst(*args):
-    raise Exception('replaceFirst is not implemented yet')
+def replaceFirst(string, pattern, replacement):
+    return re.subn(pattern, replacement, string, 1)
 
 
 def resetRandom():
     _random.seed(0)
 
 
-def reverse(*args):
-    raise Exception('reverse is not implemented yet')
+def reverse(value):
+    if isinstance(value, (list, str)):
+        return value[::-1]
+    raise Exception(f"Operand '{value}' is not a list or string.")
 
 
 def rnd(iterable):
@@ -524,21 +615,37 @@ def round(n):
 
 
 def run(*args):
-    raise Exception('run is not implemented yet')
+    raise NotImplementedError('run is not implemented yet')
 
 def sin(value):
     return math.sin(value)
 
-def shuffle(*args):
-    raise Exception('shuffle is not implemented yet')
+def shuffle(collection):
+    if isinstance(collection, list):
+        cp = deepcopy(collection)
+        _random.shuffle(cp)
+        return cp
+    if isinstance(collection, _str):
+        cp = list(collection)
+        _random.shuffle(cp)
+        return "".join(cp)
+    raise Exception(f"Cannot shuffle type {type(collection)}")
 
 
 def sleep(milliseconds):
     time.sleep(milliseconds*1000)
 
 
-def sort(*args):
-    raise Exception('sort is not implemented yet')
+def sort(collection):
+    if isinstance(collection, list):
+        cp = deepcopy(collection)
+        cp.sort()
+        return cp
+    if isinstance(collection, _str):
+        cp = list(collection)
+        cp.sort()
+        return "".join(cp)
+    raise Exception(f"Cannot sort type {type(collection)}")
 
 
 def split(string, pattern):
@@ -549,12 +656,12 @@ def sqrt(n):
     return math.sqrt(n)
 
 
-def startsWith(*args):
-    raise Exception('startsWith is not implemented yet')
+def startsWith(string, prefix):
+    return string.startswith(prefix)
 
 
 def stop(*args):
-    raise Exception('stop is not implemented yet')
+    raise Exception('stop is not supported')
 
 
 def str(arg):
@@ -565,29 +672,30 @@ def throw(e):
     raise Exception(e)
 
 
-def toLowerCase(*args):
-    raise Exception('toLowerCase is not implemented yet')
+def toLowerCase(string):
+    return string.lower()
 
 
-def toUpperCase(*args):
-    raise Exception('toUpperCase is not implemented yet')
+def toUpperCase(string):
+    return string.upper()
 
 
 def trace(*args):
-    raise Exception('trace is not implemented yet')
+    raise NotImplementedError('trace is not implemented yet')
 
 
-def trim(*args):
-    raise Exception('trim is not implemented yet')
+def trim(string):
+    return string.strip()
 
 
 def writeExamples(*args):
-    raise Exception('writeExamples is not implemented yet')
+    raise Exception('writeExamples is not supported')
 
 
-def writeFile(*args):
-    raise Exception('writeFile is not implemented yet')
+def writeFile(path, lines):
+    with open(path, "w") as f:
+        f.write("\n".join(lines))
 
 
 def writeLibrary(*args):
-    raise Exception('writeLibrary is not implemented yet')
+    raise Exception('writeLibrary is not supported')
