@@ -30,7 +30,8 @@ class Set():
         return self.tree.__next__().key
 
     def __arb__(self):
-        return NotImplemented
+        size = len(self)
+        return self.first() if size % 2 == 0 else self.last()
 
     def __getitem__(self, index):
         item = self.tree.__getitem__(index)

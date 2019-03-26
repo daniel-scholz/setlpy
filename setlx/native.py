@@ -50,7 +50,7 @@ def abs(value):
 
 
 def appendFile(*args):
-    raise Exception('appendFile is not implemented yet')
+    raise NotImplementedError('appendFile is not implemented yet')
 
 
 def arb(value):
@@ -70,7 +70,7 @@ def args(term):
 
 
 def ask(*args):
-    raise Exception('ask is not implemented yet')
+    raise NotImplementedError('ask is not implemented yet')
 
 
 def atan2(y, x):
@@ -78,7 +78,7 @@ def atan2(y, x):
 
 
 def cacheStats(cached_procedure):
-    raise Exception('cacheStats is not implemented yet')
+    raise NotImplementedError('cacheStats is not implemented yet')
 
 
 def canonical(term):
@@ -94,7 +94,7 @@ def char(value):
 
 
 def clearCache(cached_procedure):
-    raise Exception('clearCache is not implemented yet')
+    raise NotImplementedError('clearCache is not implemented yet')
 
 
 def collect(list):
@@ -103,7 +103,7 @@ def collect(list):
 
 
 def compare(*args):
-    raise Exception('compare is not implemented yet')
+    raise NotImplementedError('compare is not implemented yet')
 
 
 def deleteFile(path):
@@ -151,7 +151,7 @@ def execute(code, global_vars=[], local_vars=[]):
 
 
 def fct(*args):
-    raise Exception('fct is not implemented yet')
+    raise NotImplementedError('fct is not implemented yet')
 
 
 def first(value):
@@ -206,7 +206,7 @@ def fromE(value):
 
 
 def get(*args):
-    raise Exception('get is not implemented yet')
+    raise NotImplementedError('get is not implemented yet')
 
 
 def getOsID():
@@ -350,7 +350,7 @@ def isTerm(*args):
 
 
 def isVariable(*args):
-    raise Exception('isVariable is not implemented yet')
+    raise NotImplementedError('isVariable is not implemented yet')
 
 
 def join(collection, seperator):
@@ -366,15 +366,15 @@ def la_det(matrix):
 
 
 def la_eigenValues(*args):
-    raise Exception('la_eigenValues is not implemented yet')
+    raise NotImplementedError('la_eigenValues is not implemented yet')
 
 
 def la_eigenVectors(*args):
-    raise Exception('la_eigenVectors is not implemented yet')
+    raise NotImplementedError('la_eigenVectors is not implemented yet')
 
 
 def la_hadamard(*args):
-    raise Exception('la_hadamard is not implemented yet')
+    raise NotImplementedError('la_hadamard is not implemented yet')
 
 
 def la_isMatrix(value):
@@ -395,15 +395,15 @@ def la_matrix(value):
 
 
 def la_pseudoInverse(*args):
-    raise Exception('la_pseudoInverse is not implemented yet')
+    raise NotImplementedError('la_pseudoInverse is not implemented yet')
 
 
 def la_solve(*args):
-    raise Exception('la_solve is not implemented yet')
+    raise NotImplementedError('la_solve is not implemented yet')
 
 
 def la_svd(*args):
-    raise Exception('la_svd is not implemented yet')
+    raise NotImplementedError('la_svd is not implemented yet')
 
 
 def la_vector(value):
@@ -434,7 +434,7 @@ def load(file, source_file=""):
 
 
 def loadLibrary(*args):
-    raise Exception('loadLibrary is not implemented yet')
+    raise NotImplementedError('loadLibrary is not implemented yet')
 
 
 def logo(*args):
@@ -454,7 +454,7 @@ def matches(string, pattern, captureGroups=False):
 
 def mathConst(name):
     try:
-        return {"pi": math.pi, "e": math.e, "infinity": math.inf}[name]
+        return {"pi": math.pi, "e": math.e, "infinity": math.inf}[name.lower()]
     except:
         raise Exception(
             f"Name-argument {name} is not a known constant or not a string.")
@@ -522,7 +522,7 @@ def nextPermutation(list):
 
 
 def nextProbablePrime(*args):
-    raise Exception('nextProbablePrime is not implemented yet')
+    raise NotImplementedError('nextProbablePrime is not implemented yet')
 
 
 def now():
@@ -563,11 +563,11 @@ def range(map):  # map is set
 
 
 def rational(*args):
-    raise Exception('rational is not implemented yet')
+    raise NotImplementedError('rational is not implemented yet')
 
 
 def read(*args):
-    raise Exception('read is not implemented yet')
+    raise NotImplementedError('read is not implemented yet')
 
 
 def readFile(file):
@@ -605,7 +605,7 @@ def round(n):
 
 
 def run(*args):
-    raise Exception('run is not implemented yet')
+    raise NotImplementedError('run is not implemented yet')
 
 
 def shuffle(collection):
@@ -669,7 +669,7 @@ def toUpperCase(string):
 
 
 def trace(*args):
-    raise Exception('trace is not implemented yet')
+    raise NotImplementedError('trace is not implemented yet')
 
 
 def trim(string):
