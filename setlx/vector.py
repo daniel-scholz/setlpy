@@ -1,8 +1,9 @@
-from .native import isNumber
-
+from .utils import is_number
 
 class Vector:
     def __init__(self, *args):
+        if len(args)==0:
+            raise Exception("Cannot create empty vector.")
         self.values = [x for x in args]
 
     def __add__(self, other):
@@ -27,8 +28,9 @@ class Vector:
                 raise Exception(
                     "Scalar product cannot be called with vectors with different number of dimensions.")
             return sum(x*y for (x, y) in zip(self.values, other))
-        if isNumber(other):
+        if is_number(other):
             return Vector(*(other * x for x in self.values))
+        raise Exception(f"Cannot multiply type Vector and {type(other)}")
 
     def __rmul__(self, other):
         return self.__mul__(other)
@@ -75,3 +77,6 @@ class Vector:
 
     def __repr__(self):
         return self.__str__()
+
+    def to_list(self):
+        return self.values[::]

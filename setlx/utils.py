@@ -1,5 +1,5 @@
 from itertools import product
-
+from numbers import Number
 
 def to_bool(value):
     """
@@ -34,3 +34,10 @@ def iterate(**iterables):
 
 def _range(start, end, step):
     return list(range(start, end+1, step))
+
+def is_number(n):
+    # bool is int in python (True=0, False=1)
+    return isinstance(n, Number) and not isinstance(n, bool)
+
+def is_integer(value):
+    return isinstance(value, int)

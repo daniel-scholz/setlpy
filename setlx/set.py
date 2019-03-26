@@ -52,6 +52,9 @@ class Set():
     def __str__(self):
         return "{" + ", ".join(str(self[i]) for i in range(0, self.tree.total))+"}"
 
+    def __repr__(self):
+        return self.__str__()
+
     """https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types"""
 
     def __add__(self, other):
