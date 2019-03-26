@@ -4,6 +4,7 @@ from setlx.tree import Tree
 import copy
 from types import GeneratorType
 import itertools
+import random
 
 
 class Set():
@@ -55,7 +56,7 @@ class Set():
     def __len__(self):
         return self.tree.total
 
-    def __from__(self): # from
+    def __from__(self):  # from
         result = self.__arb__()
         self -= result
         return result
@@ -76,7 +77,7 @@ class Set():
 
     def __add__(self, other):
         # add elements/ union of two sets
-        new_set = Set(self.tree)
+        new_set = self[:]
         # for s in self:
         # new_set.insert(s)
 
@@ -89,7 +90,7 @@ class Set():
 
     def __sub__(self, other):
         # remove from self
-        new_set = Set(self.tree)
+        new_set = self[:]
 
         if not isinstance(other, (Set, Tree)):
             new_set.tree.delete(other)
@@ -176,3 +177,6 @@ class Set():
 
     def clear(self):
         self = Set()
+
+    def __rnd__(self):
+        return self[random.randint(0, self.tree.total)]
