@@ -40,7 +40,6 @@ _pow = pow
 _range = range
 _round = round
 
-
 def abort(msg):
     raise Exception(msg)
 
@@ -51,6 +50,7 @@ def abs(value):
 
 def appendFile(*args):
     raise NotImplementedError('appendFile is not implemented yet')
+
 
 
 def arb(value):
@@ -77,8 +77,10 @@ def atan2(y, x):
     return math.atan2(y, x)
 
 
-def cacheStats(cached_procedure):
-    raise NotImplementedError('cacheStats is not implemented yet')
+def cacheStats(fn):
+    # TODO wrap in setlx structures
+    return fn.cache.cache_info()
+
 
 
 def canonical(term):
@@ -105,6 +107,9 @@ def collect(list):
 def compare(*args):
     raise NotImplementedError('compare is not implemented yet')
 
+
+def cos(value):
+    return math.cos(value)
 
 def deleteFile(path):
     try:
@@ -149,6 +154,8 @@ def execute(code, global_vars=[], local_vars=[]):
     py_code = astor.to_source(t.transpile())
     return exec(py_code, global_vars, local_vars)
 
+def exp(value):
+    return math.exp(value)
 
 def fct(*args):
     raise NotImplementedError('fct is not implemented yet')
@@ -415,7 +422,7 @@ def la_vector(value):
         "Vectors can only be created from collections or matrices.")
 
 
-def last(value):
+  def last(value):
     if isinstance(value, (list, _str)):
         return value[-1]
     try:
@@ -423,7 +430,6 @@ def last(value):
     except:
         raise Exception(
             f"Can not get last member from operand; '{value}' is not a collection value.")
-
 
 def load(file, source_file=""):
     source = os.path.dirname(os.path.realpath(source_file))
@@ -435,6 +441,10 @@ def load(file, source_file=""):
 
 def loadLibrary(*args):
     raise NotImplementedError('loadLibrary is not implemented yet')
+
+
+def log(value):
+    return math.log(value)
 
 
 def logo(*args):
@@ -607,6 +617,8 @@ def round(n):
 def run(*args):
     raise NotImplementedError('run is not implemented yet')
 
+def sin(value):
+    return math.sin(value)
 
 def shuffle(collection):
     if isinstance(collection, list):
