@@ -43,7 +43,6 @@ class Set():
         else:
             return self.tree[-1].key
 
-
     def __getitem__(self, index):
         if isinstance(index, slice):
             start = index.start if index.start != None else 0
@@ -56,9 +55,10 @@ class Set():
     def __len__(self):
         return self.tree.total
 
-    def __from__(self):
-        # look up SetlX implementation
-        return self.tree[0]
+    def __from__(self): # from
+        result = self.__arb__()
+        self -= result
+        return result
 
     def first(self):
         return self.tree[0]
@@ -174,22 +174,5 @@ class Set():
     def insert(self, key):
         self.tree.insert(key)
 
-
-def arb(s):
-    try:
-        return s.__arb__()
-    except:
-        raise Exception(f"arb not defined on type {type(s)}")
-
-
-def pow(x, y):
-    if type(y) == Set:
-        if x == 2:
-            if len(y) == 0:
-                return Set(Set())
-            element = y[0]
-
-            return pow(2, y[1:]) + Set(element) + pow(2, y[1:])
-
-        raise ValueError(f"{x} must be 2 to compute power set")
-    return x ** y
+    def clear(self):
+        self = Set()

@@ -40,6 +40,7 @@ _pow = pow
 _range = range
 _round = round
 
+
 def abort(msg):
     raise Exception(msg)
 
@@ -52,12 +53,10 @@ def appendFile(*args):
     raise NotImplementedError('appendFile is not implemented yet')
 
 
-
 def arb(value):
-    if isinstance(value, (list, _str)):
+    if isinstance(value, (list, tuple, _str)):
         size = len(value)
-        index = 0 if size % 2 == 0 else -1
-        v = value[index]
+        v = value[0 if size % 2 == 0 else -1]
         return v
     try:
         return value.__arb__()
@@ -80,7 +79,6 @@ def atan2(y, x):
 def cacheStats(fn):
     # TODO wrap in setlx structures
     return fn.cache.cache_info()
-
 
 
 def canonical(term):
@@ -110,6 +108,7 @@ def compare(*args):
 
 def cos(value):
     return math.cos(value)
+
 
 def deleteFile(path):
     try:
@@ -154,8 +153,10 @@ def execute(code, global_vars=[], local_vars=[]):
     py_code = astor.to_source(t.transpile())
     return exec(py_code, global_vars, local_vars)
 
+
 def exp(value):
     return math.exp(value)
+
 
 def fct(*args):
     raise NotImplementedError('fct is not implemented yet')
@@ -175,8 +176,6 @@ def floor(value):
     return math.floor(value)
 
 # This is the setlx from function. renamed because "from" is a python keword
-
-
 def v_from(value):
     if isinstance(value, (list, _str)):
         size = len(value)
@@ -422,7 +421,7 @@ def la_vector(value):
         "Vectors can only be created from collections or matrices.")
 
 
-  def last(value):
+def last(value):
     if isinstance(value, (list, _str)):
         return value[-1]
     try:
@@ -430,6 +429,7 @@ def la_vector(value):
     except:
         raise Exception(
             f"Can not get last member from operand; '{value}' is not a collection value.")
+
 
 def load(file, source_file=""):
     source = os.path.dirname(os.path.realpath(source_file))
@@ -552,8 +552,18 @@ def permutations(iterable):
     return list(itertools.permutations(iterable))
 
 
-def pow(set):
-    return set.__pow_set__()  # TODO
+def pow(x, y):
+    if type(y) == Set:
+        if x == 2:
+            raise NotImplementedError("power set is not yet implemented")
+            # if len(y) == 0:
+            #     return Set(Set())
+            # element = y[0]
+
+            # return pow(2, y[1:]) + Set(element) + pow(2, y[1:])
+
+        raise ValueError(f"{x} must be 2 to compute power set")
+    return x ** y
 
 
 def print(*args):
@@ -617,8 +627,10 @@ def round(n):
 def run(*args):
     raise NotImplementedError('run is not implemented yet')
 
+
 def sin(value):
     return math.sin(value)
+
 
 def shuffle(collection):
     if isinstance(collection, list):
