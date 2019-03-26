@@ -13,22 +13,24 @@ class Tree():
         """
         returns the iterator object
         """
-        self.current_node = self[0]
+        # self.prev_index = None if self.index == None else self.index
         self.index = 0
+        # minimum of the tree
         return self
 
     def __next__(self):
         if self.index < self.total:
-            self.current_node = self.__getitem__(index=self.index)
+            old_i = self.index
             self.index += 1
-            return self.current_node
+            return self[old_i]
         else:
+            # self.index = self.prev_index
             raise StopIteration
 
     def __getitem__(self, index):
         if index < 0:
             index = self.total - abs(index)
-        return self.root.__getitem__(index)
+        return self.root[index]
 
     def insert(self, node):
         if not isinstance(node, BinaryNode):
@@ -43,9 +45,12 @@ class Tree():
         if self.root != None:
             return self.root._find(key)
 
-    # extracts key from nnode
+    # extracts key from node
     def find(self, key):
-        return self._find(key).key
+        result = self._find(key)
+        if result != None:
+            return result.key
+        return result
 
     def delete(self, key):
         tree = self
@@ -61,10 +66,10 @@ class Tree():
                     root_right = root.right
                     if root_right.left == None:
                         root.right = root_right.right
-                        root.key = root_right.key
+                        root.key= root_right.key
                     else:
                         # parent.key = current.del_min()
-                        root.key = root_right.del_min()
+                        root.key= root_right.del_min()
             else:
                 tree.root.delete(key)
             self.total -= 1
@@ -90,6 +95,8 @@ class Tree():
         if self.root != None or other.root != None:
             return self.root == other.root
         else:  # elif other == None:
+            if self.root == None and other.root == None:
+                return True
             return False
 
     def _traverse(self):
@@ -109,7 +116,7 @@ class Tree():
             return False
         if other.root != None and self.root != None:
             # root_eq = other.find(self.root.key)
-            for node in self._traverse():
+            for node in self:
                 if not other.find(node.key):
                     return False
             return True

@@ -3,6 +3,7 @@ from setlx.tree import Tree
 
 import copy
 from types import GeneratorType
+import itertools
 
 
 class Set():
@@ -10,7 +11,7 @@ class Set():
     def __init__(self, arg=None):
         if isinstance(arg, Tree):  # not sure if this is necessary
             self.tree = arg
-        elif not isinstance(arg, (GeneratorType)) or arg == None:
+        elif not isinstance(arg, (GeneratorType, range)) or arg == None:
             self.tree = Tree(arg)
         else:
             try:
@@ -25,15 +26,22 @@ class Set():
                     f"set cannot be created from {type(arg)}")
 
     def __iter__(self):
-        self.tree.index = 0
-        self.tree.current_node = self.tree[0]  # minimum of the tree
-        return self
+        new_set = Set(self.tree)
+        new_set.tree.index = 0
+        # minimum of the tree
+        # self.tree.current_node = self.tree[0] if self.tree.total > 0 else None
+        return new_set
 
     def __next__(self):
-        return self.tree.__next__().key
+        return next(self.tree).key
 
     def __arb__(self):
-        return NotImplemented
+        if self.tree.total < 1:
+            return None
+        if self.tree.total % 2 == 0:
+            return self.tree[0].key
+        else:
+            return self.tree[-1].key
 
     def __getitem__(self, index):
         if isinstance(index, slice):
@@ -58,40 +66,40 @@ class Set():
         return self.tree[-1]
 
     def __str__(self):
-        return "{" + ", ".join(str(self[i]) for i in range(0, self.tree.total))+"}"
+        return "{" + ", ".join("'" + self[i].key + "'" if type(self[i].key) == str else str(self[i]) for i in range(0, self.tree.total))+"}"
 
+    def __repr__(self):
+        return str(self)
     """https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types"""
 
     def __add__(self, other):
         # add elements/ union of two sets
-        # if isinstance(other, Set):
-        #     for node in other:
-        #         self.tree.insert(node)
-        # el
+        new_set = Set(self.tree)
+        # for s in self:
+        # new_set.insert(s)
+
         if not isinstance(other, (Set, Tree)):
-            self.tree.insert(other)
-        else:
+            new_set.insert(other)
+        elif len(other) != 0:  # is not empty set
             for o in other:
-                try:
-                    self.tree.insert(o)
-                except TypeError:
-                    raise TypeError(
-                        f"items of type {type(o)} cannot be add to set of type {type(min(self))}")
-        return self
+                new_set.insert(o)
+        return new_set
 
     def __sub__(self, other):
         # remove from self
+        new_set = Set(self.tree)
+
         if not isinstance(other, (Set, Tree)):
-            self.tree.delete(other)
+            new_set.tree.delete(other)
         else:
             for o in other:
                 if o in self:
                     try:
-                        self.tree.delete(o)
+                        new_set.tree.delete(o)
                     except (ValueError):
                         raise TypeError(
                             f"could not delete {o} from set")
-        return self
+        return new_set
 
     def __mul__(self, other):
         # intersection
@@ -114,7 +122,13 @@ class Set():
 
     def __pow__(self, other, modulo=None):
         # ** operator
-        pass
+        if other == 2:
+            new_set = Set()
+            for s1 in self:
+                for s2 in self:
+                    new_set += (s1, s2)
+            return new_set
+        raise TypeError(f"{other} must be 2 to computer cartesian product")
 
     def __and__(self, other):
         pass
@@ -129,7 +143,7 @@ class Set():
         implements check for subset, NOT real less or equal
         other is subset of self; all elements of self are in other
         """
-        if other != None and self != None:
+        if other != None and self != None:  # and other.tree != None and self.tree != None:
             return self.tree <= other.tree
         return False
 
@@ -137,7 +151,7 @@ class Set():
         """
         implements check for real subset, NOT real less
         """
-        return self != other and self <= other
+        return self.tree != other.tree and self.tree <= other.tree
 
     def __gt__(self, other):
         """
@@ -150,6 +164,13 @@ class Set():
         returns self >= other
         """
         return other <= self
+    # extracts key from nnode
+
+    def find(self, key):
+        return self.tree.find(key)
+
+    def insert(self, key):
+        self.tree.insert(key)
 
 
 def arb(s):
@@ -157,3 +178,16 @@ def arb(s):
         return s.__arb__()
     except:
         raise Exception(f"arb not defined on type {type(s)}")
+
+
+def pow(x, y):
+    if type(y) == Set:
+        if x == 2:
+            if len(y) == 0:
+                return Set(Set())
+            element = y[0]
+
+            return pow(2, y[1:]) + Set(element) + pow(2, y[1:])
+
+        raise ValueError(f"{x} must be 2 to compute power set")
+    return x ** y
