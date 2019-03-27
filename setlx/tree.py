@@ -22,7 +22,7 @@ class Tree():
         if self.index < self.total:
             old_i = self.index
             self.index += 1
-            return self[old_i]
+            return self[old_i].key
         else:
             # self.index = self.prev_index
             raise StopIteration
@@ -66,10 +66,10 @@ class Tree():
                     root_right = root.right
                     if root_right.left == None:
                         root.right = root_right.right
-                        root.key= root_right.key
+                        root.key = root_right.key
                     else:
                         # parent.key = current.del_min()
-                        root.key= root_right.del_min()
+                        root.key = root_right.del_min()
             else:
                 tree.root.delete(key)
             self.total -= 1

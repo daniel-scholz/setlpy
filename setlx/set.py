@@ -27,22 +27,21 @@ class Set():
                     f"set cannot be created from {type(arg)}")
 
     def __iter__(self):
-        new_set = Set(self.tree)
-        new_set.tree.index = 0
+        self.tree.index = 0
         # minimum of the tree
         # self.tree.current_node = self.tree[0] if self.tree.total > 0 else None
-        return new_set
+        return self
 
     def __next__(self):
-        return next(self.tree).key
+        return next(self.tree)
 
     def __arb__(self):
         if self.tree.total < 1:
             return None
         if self.tree.total % 2 == 0:
-            return self.tree[0].key
+            return self.tree[0]
         else:
-            return self.tree[-1].key
+            return self.tree[-1]
 
     def __getitem__(self, index):
         if isinstance(index, slice):
@@ -68,7 +67,7 @@ class Set():
         return self.tree[-1]
 
     def __str__(self):
-        return "{" + ", ".join("'" + self[i].key + "'" if type(self[i].key) == str else str(self[i]) for i in range(0, self.tree.total))+"}"
+        return "{" + ", ".join("'" + self[i] + "'" if type(self[i]) == str else str(self[i]) for i in range(0, self.tree.total))+"}"
 
     def __repr__(self):
         return self.__str__()
@@ -78,8 +77,6 @@ class Set():
     def __add__(self, other):
         # add elements/ union of two sets
         new_set = self[:]
-        # for s in self:
-        # new_set.insert(s)
 
         if not isinstance(other, (Set, Tree)):
             new_set.insert(other)

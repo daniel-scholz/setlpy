@@ -168,6 +168,8 @@ def floor(value):
     return math.floor(value)
 
 # This is the setlx from function. renamed because "from" is a python keword
+
+
 def v_from(value):
     if isinstance(value, (list, _str)):
         size = len(value)
@@ -695,3 +697,5 @@ def writeFile(path, lines):
 
 def writeLibrary(*args):
     raise Exception('writeLibrary is not supported')
+
+
