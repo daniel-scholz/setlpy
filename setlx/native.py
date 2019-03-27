@@ -106,10 +106,6 @@ def compare(*args):
     raise NotImplementedError('compare is not implemented yet')
 
 
-def cos(value):
-    return math.cos(value)
-
-
 def deleteFile(path):
     try:
         os.remove(path)
@@ -152,10 +148,6 @@ def execute(code, global_vars=[], local_vars=[]):
     t = transpiler.Transpiler(parser.block().blk)
     py_code = astor.to_source(t.transpile())
     return exec(py_code, global_vars, local_vars)
-
-
-def exp(value):
-    return math.exp(value)
 
 
 def fct(*args):
@@ -443,10 +435,6 @@ def loadLibrary(*args):
     raise NotImplementedError('loadLibrary is not implemented yet')
 
 
-def log(value):
-    return math.log(value)
-
-
 def logo(*args):
     raise Exception('logo is not supported')
 
@@ -567,11 +555,11 @@ def pow(x, y):
 
 
 def print(*args):
-    _print(*args, sep=" ")
+    _print(*args, sep="")
 
 
 def printErr(*args):
-    _print(*args, sep=" ", file=sys.stderr)
+    _print(*args, sep="", file=sys.stderr)
 
 
 def random(n=1.0):
@@ -626,10 +614,6 @@ def round(n):
 
 def run(*args):
     raise NotImplementedError('run is not implemented yet')
-
-
-def sin(value):
-    return math.sin(value)
 
 
 def shuffle(collection):
