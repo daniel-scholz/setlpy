@@ -3,21 +3,25 @@ from inspect import getfullargspec
 from copy import deepcopy as _deepcopy
 
 
-def cached_procedure(func):
-    cache = _lru_cache(maxsize=None, typed=False)(func)
-    arg_info = getfullargspec(func)
-    
-    def decorator(*args, **kwargs):
-        arg_names = arg_info.args
-        if len(arg_names) > 0 and arg_names[0] == "self":
-            arg_names = arg_names[1:]
-        # no read/write arguments in cached procedures!
-        c_args = (_deepcopy(a) if arg_info.args[i] !=
-                "self" else a for i, a in enumerate(args))
-        c_kwargs = {name: _deepcopy(value) for name, value in kwargs.items()}
-        return cache(*c_args, **c_kwargs)
+class cached_procedure:
+    def __init__(self, func):
+        self.cache = _lru_cache(maxsize=None, typed=False)(func)
+        arg_info = getfullargspec(func)
 
-    return decorator
+        def decorator(*args, **kwargs):
+            arg_names = arg_info.args
+            if len(arg_names) > 0 and arg_names[0] == "self":
+                arg_names = arg_names[1:]
+            # no read/write arguments in cached procedures!
+            c_args = (_deepcopy(a) if arg_info.args[i] !=
+                    "self" else a for i, a in enumerate(args))
+            c_kwargs = {name: _deepcopy(value) for name, value in kwargs.items()}
+            return self.cache(*c_args, **c_kwargs)
+
+        self.decorator = decorator
+    
+    def __call__(self, *args, **kwargs):
+        return self.decorator(*args,**kwargs)
 
 
 

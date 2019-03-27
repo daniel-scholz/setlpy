@@ -13,39 +13,44 @@ class Tree():
         """
         returns the iterator object
         """
-        self.current_node = self[0]
+        # self.prev_index = None if self.index == None else self.index
         self.index = 0
+        # minimum of the tree
         return self
 
     def __next__(self):
         if self.index < self.total:
-            self.current_node = self.__getitem__(index=self.index)
+            old_i = self.index
             self.index += 1
-            return self.current_node
+            return self[old_i]
         else:
+            # self.index = self.prev_index
             raise StopIteration
 
     def __getitem__(self, index):
         if index < 0:
             index = self.total - abs(index)
-        return self.root.__getitem__(index)
+        return self.root[index]
 
     def insert(self, node):
         if not isinstance(node, BinaryNode):
             node = BinaryNode(node)
         if self.root == None:
             self.root = node
+            self.total += 1
         else:
-            self.root.insert(node)
-        self.total += 1
+            self.total += self.root.insert(node)
 
     def _find(self, key):
         if self.root != None:
             return self.root._find(key)
 
-    # extracts key from nnode
+    # extracts key from node
     def find(self, key):
-        return self._find(key).key
+        result = self._find(key)
+        if result != None:
+            return result.key
+        return result
 
     def delete(self, key):
         tree = self
@@ -61,10 +66,10 @@ class Tree():
                     root_right = root.right
                     if root_right.left == None:
                         root.right = root_right.right
-                        root.key = root_right.key
+                        root.key= root_right.key
                     else:
                         # parent.key = current.del_min()
-                        root.key = root_right.del_min()
+                        root.key= root_right.del_min()
             else:
                 tree.root.delete(key)
             self.total -= 1
@@ -87,9 +92,11 @@ class Tree():
         return "{}"
 
     def __eq__(self, other):
-        if self.root != None:
+        if self.root != None or other.root != None:
             return self.root == other.root
         else:  # elif other == None:
+            if self.root == None and other.root == None:
+                return True
             return False
 
     def _traverse(self):
@@ -103,11 +110,16 @@ class Tree():
         implements check for subset, NOT real less or equal
         other is subset of self; all elements of self are in other
         """
-        #root_eq = other.find(self.root.key)
-        for node in self._traverse():
-            if not other.find(node.key):
-                return False
-        return True
+        if self.root == None:  # left set is empty
+            return True
+        if other.root == None:  # right set is empty
+            return False
+        if other.root != None and self.root != None:
+            # root_eq = other.find(self.root.key)
+            for node in self:
+                if not other.find(node.key):
+                    return False
+            return True
 
     def __lt__(self, other):
         """

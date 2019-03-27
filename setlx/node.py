@@ -1,6 +1,51 @@
+class _Key():
+    """
+    class for elements in a Node of a BinaryTree
+    """
+
+    def __init__(self, key):
+        if type(key) == _Key:  # prevent nested keys
+            self.key = key.key
+        else:
+            self.key = key
+
+    def __eq__(self, other):
+        if not isinstance(other, _Key):
+            other = _Key(other)
+        return self.key == other.key
+
+    def __le__(self, other):
+        if type(self.key) == type(other.key):
+            return self.key <= other.key
+        return str(type(self.key)) <= str(type(other.key))
+
+    def __lt__(self, other):
+        if not isinstance(other, _Key):
+            other = _Key(other)
+        return self.key != other.key and self <= other
+
+    def __gt__(self, other):
+        """
+        returns self > other
+        """
+        return other < self
+
+    def __ge__(self, other):
+        """
+        returns self >= other
+        """
+        return other <= self
+
+    def __str__(self):
+        return str(self.key)
+
+    def __repr__(self):
+        return str(self)
+
+
 class BinaryNode():
     def __init__(self, key, left=None, right=None):
-        self.key = key
+        self.key = _Key(key)
         self.left = left
         self.right = right
 
@@ -18,12 +63,17 @@ class BinaryNode():
             if self.right != None:
                 return self.right.insert(node)
             self.right = node
-        else:
+            return 1
+        elif node.key != self.key:  # similar effect to < operator but works for python sets as well
             if self.left != None:
                 return self.left.insert(node)
             self.left = node
+            return 1
+        return 0
 
     def _find(self, key):
+        if not isinstance(key, _Key):
+            key = _Key(key)
         if key == self.key:
             return self
         if key < self.key and self.left != None:
