@@ -547,11 +547,11 @@ def pow(set):
 
 
 def print(*args):
-    _print(*args, sep=" ")
+    _print(*args, sep="")
 
 
 def printErr(*args):
-    _print(*args, sep=" ", file=sys.stderr)
+    _print(*args, sep="", file=sys.stderr)
 
 
 def random(n=1.0):
