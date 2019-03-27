@@ -38,9 +38,9 @@ class Set():
         if self.tree.total < 1:
             return None
         if self.tree.total % 2 == 0:
-            return self.tree[0]
+            return self.tree[0].key
         else:
-            return self.tree[-1]
+            return self.tree[-1].key
 
     def __getitem__(self, index):
         if isinstance(index, slice):

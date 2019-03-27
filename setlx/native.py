@@ -605,9 +605,13 @@ def reverse(value):
     raise Exception(f"Operand '{value}' is not a list or string.")
 
 
-def rnd(iterable):
-    rnd_index = _random.randint(0, len(iterable)-1)
-    return iterable[rnd_index]
+def rnd(numberOrCollection, numberOfChoices=None):
+    if isinstance(numberOrCollection, _int):
+        return _random.randint(0, numberOrCollection)
+    if numberOfChoices != None:
+        raise NotImplementedError("numberOfChoices is not implemented yet")
+    rnd_index = _random.randint(0, len(numberOrCollection)-1)
+    return numberOrCollection[rnd_index]
 
 
 def round(n):
@@ -697,5 +701,3 @@ def writeFile(path, lines):
 
 def writeLibrary(*args):
     raise Exception('writeLibrary is not supported')
-
-
