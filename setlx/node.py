@@ -28,12 +28,16 @@ class _Key():
         """
         returns self > other
         """
+        if not isinstance(other, _Key):
+            other = _Key(other)
         return other < self
 
     def __ge__(self, other):
         """
         returns self >= other
         """
+        if not isinstance(other, _Key):
+            other = _Key(other)
         return other <= self
 
     def __str__(self):
@@ -86,7 +90,7 @@ class BinaryNode():
         Deletes the parameter key from the set
         """
         parent = self
-        if parent.left and key < parent.key:
+        if parent.left != None and key < parent.key:
             to_delete = parent.left
             if to_delete.key == key:
                 if to_delete.right == None:
