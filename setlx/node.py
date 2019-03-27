@@ -49,7 +49,7 @@ class _Key():
 
 class BinaryNode():
     def __init__(self, key, left=None, right=None):
-        self.key = _Key(key)
+        self.key = key
         self.left = left
         self.right = right
 
@@ -63,12 +63,13 @@ class BinaryNode():
         raise IndexError
 
     def insert(self, node):
-        if node.key > self.key:
+        if _Key(node.key) > _Key(self.key):
             if self.right != None:
                 return self.right.insert(node)
             self.right = node
             return 1
-        elif node.key != self.key:  # similar effect to < operator but works for python sets as well
+        # similar effect to < operator but works for python sets as well
+        elif _Key(node.key) != _Key(self.key):
             if self.left != None:
                 return self.left.insert(node)
             self.left = node
@@ -78,11 +79,11 @@ class BinaryNode():
     def _find(self, key):
         if not isinstance(key, _Key):
             key = _Key(key)
-        if key == self.key:
+        if _Key(key) == _Key(self.key):
             return self
-        if key < self.key and self.left != None:
+        if _Key(key) < _Key(self.key) and self.left != None:
             return self.left._find(key)
-        if key > self.key and self.right != None:
+        if _Key(key) > _Key(self.key) and self.right != None:
             return self.right._find(key)
 
     def delete(self, key):
@@ -90,9 +91,9 @@ class BinaryNode():
         Deletes the parameter key from the set
         """
         parent = self
-        if parent.left != None and key < parent.key:
+        if parent.left != None and _Key(key) < _Key(parent.key):
             to_delete = parent.left
-            if to_delete.key == key:
+            if _Key(to_delete.key) == _Key(key):
                 if to_delete.right == None:
                     parent.left = to_delete.left
                 elif to_delete.left == None:
@@ -109,7 +110,7 @@ class BinaryNode():
                 to_delete.delete(key)
         elif parent.right and key > parent.key:
             to_delete = parent.right
-            if to_delete.key == key:
+            if _Key(to_delete.key) == _Key(key):
                 if to_delete.right == None:
                     parent.right = to_delete.left
                 elif to_delete.left == None:
@@ -168,16 +169,16 @@ class BinaryNode():
         return o_none and s_none
 
     def __le__(self, other):
-        return self.key <= other.key
+        return _Key(self.key) <= _Key(other.key)
 
     def __lt__(self, other):
-        return self.key < other.key
+        return _Key(self.key) < _Key(other.key)
 
     def __gt__(self, other):
-        return self.key > other.key
+        return _Key(self.key) > _Key(other.key)
 
     def __ge__(self, other):
-        return self.key >= other.key
+        return _Key(self.key) >= _Key(other.key)
 
     def _traverse(self):
         if self.left != None:
