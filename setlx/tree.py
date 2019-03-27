@@ -117,7 +117,7 @@ class Tree():
         if other.root != None and self.root != None:
             # root_eq = other.find(self.root.key)
             for node in self:
-                if not other.find(node.key):
+                if not other.find(node):
                     return False
             return True
 

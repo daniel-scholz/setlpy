@@ -136,7 +136,7 @@ class Set():
         return self % other
 
     def __eq__(self, other):
-        return self.tree == other.tree
+        return self.tree >= other.tree and self.tree <= other.tree
 
     def __le__(self, other):  # a.k.a. is_subset
         """
