@@ -152,7 +152,7 @@ class Set():
         """
         implements check for real subset, NOT real less
         """
-        return self.tree != other.tree and self.tree <= other.tree
+        return self != other and self.tree <= other.tree
 
     def __gt__(self, other):
         """
