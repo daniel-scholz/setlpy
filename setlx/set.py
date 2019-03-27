@@ -1,6 +1,5 @@
 from setlx.node import BinaryNode
 from setlx.tree import Tree
-
 import copy
 from types import GeneratorType
 import itertools
@@ -12,7 +11,7 @@ class Set():
     def __init__(self, arg=None):
         if isinstance(arg, Tree):  # not sure if this is necessary
             self.tree = arg
-        elif not isinstance(arg, (GeneratorType, range)) or arg == None:
+        elif arg == None:  # or not isinstance(arg, (GeneratorType, range)):
             self.tree = Tree(arg)
         else:
             try:
@@ -49,8 +48,7 @@ class Set():
             stop = index.stop if index.step != None else self.tree.total
             step = index.step if index.step != None else 1
             return Set(self[i] for i in range(start, stop, step))
-        item = self.tree[index]
-        return item.key if isinstance(item, BinaryNode) else item
+        return self.tree[index].key
 
     def __len__(self):
         return self.tree.total
@@ -170,7 +168,11 @@ class Set():
         return self.tree.find(key)
 
     def insert(self, key):
-        self.tree.insert(key)
+        if isinstance(key, tuple):
+            for k in key:
+                self.tree.insert(k)
+        else:
+            self.tree.insert(key)
 
     def clear(self):
         self = Set()
