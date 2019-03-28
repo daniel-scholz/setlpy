@@ -26,5 +26,5 @@ def map(value):
 
 
 def _range(start, end, step=1):
-    offset = +1 if end > start else -1
-    return list(range(start, end+offset, step))
+    offset = +1 if end >= start else -1
+    return range(start, end+offset, step)
