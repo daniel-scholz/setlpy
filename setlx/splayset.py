@@ -1,5 +1,5 @@
 from setlx.node import BinaryNode
-from setlx.tree import Tree
+from setlx.splaytree import SplayTree
 import copy
 from types import GeneratorType
 import itertools
@@ -9,16 +9,16 @@ import random
 class Set():
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
     def __init__(self, arg=None):
-        if isinstance(arg, Tree):  # not sure if this is necessary
+        if isinstance(arg, SplayTree):  # not sure if this is necessary
             self.tree = arg
         elif arg == None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
-            self.tree = Tree(arg)
+            self.tree = SplayTree(arg)
         else:
             try:
                 """
                 check if argument for constructor is an iterable like list, set etc.
                 """
-                self.tree = Tree()
+                self.tree = SplayTree()
                 for element in iter(arg):
                     self.tree.insert(element)
             except TypeError:
@@ -47,6 +47,10 @@ class Set():
             start = index.start if index.start != None else 0
             stop = index.stop if index.step != None else self.tree.total
             step = index.step if index.step != None else 1
+            # new_set = Set()
+            # for i in range(start, stop, step):
+                # new_set.insert(self[i])
+            # return new_set
             return Set(self[i] for i in range(start, stop, step))
         return self.tree[index].key
 
@@ -76,7 +80,7 @@ class Set():
         # add elements/ union of two sets
         new_set = self[:]
 
-        if not isinstance(other, (Set, Tree)):
+        if not isinstance(other, (Set, SplayTree)):
             new_set.insert(other)
         elif len(other) != 0:  # is not empty set
             for o in other:
@@ -87,7 +91,7 @@ class Set():
         # remove from self
         new_set = self[:]
 
-        if not isinstance(other, (Set, Tree)):
+        if not isinstance(other, (Set, SplayTree)):
             new_set.tree.delete(other)
         else:
             for o in other:

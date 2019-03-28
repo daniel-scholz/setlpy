@@ -85,7 +85,7 @@ class BinaryNode():
             return self.left._find(key)
         if _Key(key) > _Key(self.key) and self.right != None:
             return self.right._find(key)
-
+        # TODO: consider raising an error
     def delete(self, key):
         """
         Deletes the parameter key from the set

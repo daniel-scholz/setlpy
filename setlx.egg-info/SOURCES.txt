@@ -10,6 +10,9 @@ setlx/native.py
 setlx/node.py
 setlx/set.py
 setlx/set_functions.py
+setlx/splaynode.py
+setlx/splayset.py
+setlx/splaytree.py
 setlx/tree.py
 setlx/utils.py
 setlx/vector.py

@@ -1,11 +1,16 @@
 import random
 import string
+import time
+from setlx.splayset import Set
 
-import setlx
 random = random.Random(27121998)
+start = time.perf_counter()
+j = random.randint(1, 100000000)
+a = Set(j)
 
-s1 = setlx.Set(range(0, 5))
-s2 = s1[:]
-s1 = s1 - 3
-print(s1 - 3)
-print(s2)
+for i in range(1, 10000):
+    a.insert(random.randint(1, 100000000))
+a.find(j)
+stop = time.perf_counter()
+print(stop-start)
+# print(a)
