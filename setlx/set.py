@@ -8,11 +8,11 @@ import random
 
 class Set():
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
-    def __init__(self, arg=None):
+    def __init__(self, arg=None, value=None):
         if isinstance(arg, Tree):  # not sure if this is necessary
             self.tree = arg
         elif arg == None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
-            self.tree = Tree(arg)
+            self.tree = Tree(arg, value)
         else:
             try:
                 """
@@ -43,12 +43,19 @@ class Set():
             return self.tree[-1].key
 
     def __getitem__(self, index):
-        if isinstance(index, slice):
-            start = index.start if index.start != None else 0
-            stop = index.stop if index.step != None else self.tree.total
-            step = index.step if index.step != None else 1
-            return Set(self[i] for i in range(start, stop, step))
-        return self.tree[index].key
+        # if isinstance(index, slice):
+        #     start = index.start if index.start != None else 0
+        #     stop = index.stop if index.step != None else self.tree.total
+        #     step = index.step if index.step != None else 1
+        #     return Set(self[i] for i in range(start, stop, step))
+        return self.tree[index]
+
+    def __setitem__(self, key, value):
+        self.tree[key] = value
+        # print(key, value)
+
+    def _clone(self):
+        return Set(self.tree._clone())
 
     def __len__(self):
         return self.tree.total
@@ -65,7 +72,7 @@ class Set():
         return self.tree[-1]
 
     def __str__(self):
-        return "{" + ", ".join("'" + self[i] + "'" if type(self[i]) == str else str(self[i]) for i in range(0, self.tree.total))+"}"
+        return "{" + ", ".join(("'" + i + "'") if type(i) == str else str(i) for i in self.tree) + "}"
 
     def __repr__(self):
         return self.__str__()
@@ -74,7 +81,7 @@ class Set():
 
     def __add__(self, other):
         # add elements/ union of two sets
-        new_set = self[:]
+        new_set = self._clone()
 
         if not isinstance(other, (Set, Tree)):
             new_set.insert(other)
@@ -85,7 +92,7 @@ class Set():
 
     def __sub__(self, other):
         # remove from self
-        new_set = self[:]
+        new_set = self._clone()  # TODO: deepcopy?
 
         if not isinstance(other, (Set, Tree)):
             new_set.tree.delete(other)
@@ -113,9 +120,8 @@ class Set():
 
     def __mod__(self, other):
         # “%” computes the symmetric difference of two sets.
-        self_copy = self[:]
         s1 = (self - other)
-        s2 = (other - self_copy)
+        s2 = (other - self)
         return s1 + s2
 
     def __pow__(self, other, modulo=None):
@@ -136,6 +142,10 @@ class Set():
         return self % other
 
     def __eq__(self, other):
+        try:
+            _ = other.tree
+        except AttributeError:
+            return False
         return self.tree >= other.tree and self.tree <= other.tree
 
     def __le__(self, other):  # a.k.a. is_subset
@@ -170,15 +180,34 @@ class Set():
     def find(self, key):
         return self.tree.find(key)
 
-    def insert(self, key):
-        if isinstance(key, tuple):
+    def delete(self, key):
+        self.tree.delete(key)
+
+    def insert(self, key, value=None):
+        if isinstance(key, (set, GeneratorType, range)):
             for k in key:
-                self.tree.insert(k)
+                self.tree.insert(k, value)
+        elif isinstance(key, (tuple, list)):
+            if len(key) == 2:
+                self.tree.insert(key[0], key[1])
+            else:
+                for k in key:
+                    self.tree.insert(k, value)
         else:
-            self.tree.insert(key)
+            self.tree.insert(key, value)
 
     def clear(self):
         self = Set()
 
     def __rnd__(self):
         return self[random.randint(0, self.tree.total)]
+
+    def __domain__(self):
+        return Set(k[0] for k in self)
+
+    def __range__(self):
+        new_set = Set()
+        for s in self:
+            if isinstance(s, tuple) and len(s) == 2:
+                new_set += s[1]
+        return new_set

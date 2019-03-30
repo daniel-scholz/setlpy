@@ -2,55 +2,55 @@ from setlx.node import BinaryNode
 
 
 class Tree():
-    def __init__(self, node=None):
+    def __init__(self, key=None, value=None):
         self.root = None
         self.total = 0
-        if node != None:
-            self.insert(node)  # ensures that total count is correct
+        if key != None:
+            self.insert(key, value)  # ensures that total count is correct
     """Technically speaking, Python iterator object must implement two special methods, __iter__() and __next__(), collectively called the iterator protocol.(https://www.programiz.com/python-programming/iterator)"""
 
     def __iter__(self):
         """
         returns the iterator object
         """
-        # self.prev_index = None if self.index == None else self.index
         self.index = 0
-        # minimum of the tree
         return self
 
     def __next__(self):
         if self.index < self.total:
             old_i = self.index
             self.index += 1
-            return self[old_i].key
+            node = self.root._get_item_by_index(old_i)
+            if node.value != None:
+                return node.key, node.value
+            else:
+                return node.key
         else:
-            # self.index = self.prev_index
             raise StopIteration
 
-    def __getitem__(self, index):
-        if index < 0:
-            index = self.total - abs(index)
-        return self.root[index]
+    def __getitem__(self, key):
+        return self.root[key]
 
-    def insert(self, node):
-        if not isinstance(node, BinaryNode):
-            node = BinaryNode(node)
+    def __setitem__(self, key, value):
+        self.root.insert(BinaryNode(key, value))
+
+    def _clone(self):
+        new_tree = Tree()
+        for node in self:
+            new_tree.insert(node[0], node[1])
+        return new_tree
+
+    def insert(self, key, value=None):
+        node = BinaryNode(key, value) if not isinstance(
+            key, BinaryNode) else key
         if self.root == None:
             self.root = node
             self.total += 1
         else:
             self.total += self.root.insert(node)
 
-    def _find(self, key):
-        if self.root != None:
-            return self.root._find(key)
-
-    # extracts key from node
     def find(self, key):
-        result = self._find(key)
-        if result != None:
-            return result.key
-        return result
+        return self.root._find(key) if self.root != None else None
 
     def delete(self, key):
         tree = self
@@ -68,7 +68,6 @@ class Tree():
                         root.right = root_right.right
                         root.key = root_right.key
                     else:
-                        # parent.key = current.del_min()
                         root.key = root_right.del_min()
             else:
                 tree.root.delete(key)
@@ -92,6 +91,8 @@ class Tree():
         return "[]"
 
     def __eq__(self, other):
+        if other == None:
+            return False
         if self.root != None or other.root != None:
             return self.root == other.root
         else:  # elif other == None:
@@ -115,9 +116,9 @@ class Tree():
         if other.root == None:  # right set is empty
             return False
         if other.root != None and self.root != None:
-            # root_eq = other.find(self.root.key)
             for node in self:
-                if not other.find(node):
+                newvariable399 = other.find(node[0])
+                if not newvariable399:
                     return False
             return True
 

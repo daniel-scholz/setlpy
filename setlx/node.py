@@ -48,28 +48,42 @@ class _Key():
 
 
 class BinaryNode():
-    def __init__(self, key, left=None, right=None):
+    def __init__(self, key, value=None, left=None, right=None):
         self.key = key
+        self.value = value
         self.left = left
         self.right = right
 
     def __str__(self):
-        return f"[{self.key},{self.left},{self.right}]"
+        s = "" if self.value == None else f":{self.value}"
+        return f"[{self.key}{s},{self.left},{self.right}]"
 
-    def __getitem__(self, index):
-        for i, item in enumerate(self._traverse()):
+    def __repr__(self):
+        return str(self)
+
+    def __getitem__(self, key):
+        for node in self._traverse():
+            if node.key == key:
+                return node.value
+        # returns None if Node got no value
+
+    def _get_item_by_index(self, index):
+        for i, node in enumerate(self._traverse()):
             if i == index:
-                return item
-        raise IndexError
+                return node
 
     def insert(self, node):
-        if _Key(node.key) > _Key(self.key):
+        node_key = _Key(node.key)  # make keys comparable
+        self_key = _Key(self.key)
+        if self_key == node_key:
+            self.value = node.value
+        if node_key > self_key:
             if self.right != None:
                 return self.right.insert(node)
             self.right = node
             return 1
-        # similar effect to < operator but works for python sets as well
-        elif _Key(node.key) != _Key(self.key):
+        elif node_key != self_key:
+            # same effect as < operator but works for python sets as well
             if self.left != None:
                 return self.left.insert(node)
             self.left = node
@@ -77,15 +91,18 @@ class BinaryNode():
         return 0
 
     def _find(self, key):
-        if not isinstance(key, _Key):
-            key = _Key(key)
-        if _Key(key) == _Key(self.key):
-            return self
-        if _Key(key) < _Key(self.key) and self.left != None:
+
+        k_key = _Key(key)
+        self_key = _Key(self.key)
+        if k_key == self_key:
+            # TODO: discuss behavior of find
+            return self.value if self.value != None else self.key
+        if k_key < self_key and self.left != None:
             return self.left._find(key)
-        if _Key(key) > _Key(self.key) and self.right != None:
+        if k_key > self_key and self.right != None:
             return self.right._find(key)
-        # TODO: consider raising an error
+        # TODO: raise error
+
     def delete(self, key):
         """
         Deletes the parameter key from the set
@@ -162,9 +179,10 @@ class BinaryNode():
 
         if not s_none and not o_none:
             key___eq = self.key == other.key
+            value___eq = self.value == other.value
             left__eq = self.left == other.left
             right_eq = self.right == other.right
-            return key___eq and left__eq and right_eq
+            return key___eq and value___eq and left__eq and right_eq
 
         return o_none and s_none
 
