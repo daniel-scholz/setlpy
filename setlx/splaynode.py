@@ -2,12 +2,13 @@ from .node import BinaryNode, _Key
 
 
 class SplayNode(BinaryNode):
-    def __init__(self, key, left=None, right=None):
+    def __init__(self, key, value=None, left=None, right=None):
         if isinstance(key, BinaryNode):
             right = key.right
             left = key.left
             key = key.key
-        super().__init__(key, left=left, right=right)
+            value = key.value
+        super().__init__(key, value=value, left=left, right=right)
 
     def splay(self, node):
         if self != None and _Key(node) != _Key(self.key):
@@ -45,6 +46,7 @@ class SplayNode(BinaryNode):
         # node.right = self
         node.right.left = old_right  # old_root
         self.key = node.key
+        self.value = node.value
         self.left = node.left
         self.right = node.right
 
@@ -54,6 +56,7 @@ class SplayNode(BinaryNode):
         node.left = SplayNode(self)
         node.left.right = old_left  # old_root
         self.key = node.key
+        self.value = node.value
         self.left = node.left
         self.right = node.right
 
@@ -82,6 +85,7 @@ class SplayNode(BinaryNode):
         g.right = old_left
 
         self.key = node.key
+        self.value = node.value
         self.left = node.left
         self.right = node.right
 
@@ -99,6 +103,7 @@ class SplayNode(BinaryNode):
         g.left = old_right
 
         self.key = node.key
+        self.value = node.value
         self.left = node.left
         self.right = node.right
 
@@ -124,6 +129,7 @@ node.left   node.right                                    root.left.right   root
         node.right = p
         p.left = old_right
         self.key = node.key
+        self.value = node.value
         self.left = node.left
         self.right = node.right
 
@@ -139,5 +145,6 @@ node.left   node.right                                    root.left.right   root
         node.left = p
         p.right = old_left
         self.key = node.key
+        self.value = node.value
         self.left = node.left
         self.right = node.right

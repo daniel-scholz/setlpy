@@ -6,17 +6,19 @@ from .splaynode import SplayNode
 class SplayTree(Tree):
     """ordered binary trees with splaying algorithm"""
 
-    def __init__(self, node=None):
+    def __init__(self, key=None, value=None):
         self.root = None
         self.total = 0
-        if node != None:
-            self.insert(node)  # ensures that total count is correct
+        if key != None:
+            self.insert(key, value)  # ensures that total count is correct
 
-    def insert(self, node):
-        super().insert(SplayNode(node))
-        # print(" vor splaying:", self)
+    def insert(self, key, value=None):
+        if not isinstance(key, SplayNode):
+            node = SplayNode(key, value)
+        else:
+            node = key
+        super().insert(node)
         self.splay(node)
-        # print("nach splaying:", self)
 
     def find(self, node):
         result = super().find(node)
@@ -30,28 +32,8 @@ class SplayTree(Tree):
 
     def splay(self, node):
         if self.root != None and node != self.root.key:
-            while self.root.key != node:
+            while self.root.key != node.key:
                 self.root.splay(node)
-            # if self.root.left != None:
-            #     if self.root.left.key == node:  # node ist links unter der wurzel
-            #         self._zig_rot(self.root.left)
-            #     elif self.root.left.right != None and self.root.left.right.key == node:
-            #         # erst rechts dann links
-            #         self._zag_zig_rot(self.root.left.right)
-            #     elif self.root.left.left != None and self.root.left.left.key == node:
-            #         self._zig_zig_rot(self.root.left.left)
-            # if self.root.right != None:
-            #     if self.root.right.key == node:  # node ist rechts unter der wurzel
-            #         self._zag_rot(self.root.right)
-            #     elif self.root.right.left != None and self.root.right.left.key == node:
-            #         self._zig_zag_rot(self.root.right.left)
-            #     elif self.root.right.right != None and self.root.right.right.key == node:
-            #         self._zag_zag_rot(self.root.right.right)
-        # else:
-        #     if node < self.root.key:
-        #         self.root.left.splay(node)
-        #     else:
-        #         self.root.right.splay(node)
 
     def _zig_rot(self, node):  # rechts rotation mit knoten LINKS unter der wurzel
         """
