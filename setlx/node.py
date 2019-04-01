@@ -77,6 +77,7 @@ class BinaryNode():
         self_key = _Key(self.key)
         if self_key == node_key:
             self.value = node.value
+            return 0
         if node_key > self_key:
             if self.right != None:
                 return self.right.insert(node)

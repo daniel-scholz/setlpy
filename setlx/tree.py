@@ -32,7 +32,7 @@ class Tree():
         return self.root[key]
 
     def __setitem__(self, key, value):
-        self.root.insert(BinaryNode(key, value))
+        self.total += self.root.insert(BinaryNode(key, value))
 
     def _clone(self):
         new_tree = Tree()
