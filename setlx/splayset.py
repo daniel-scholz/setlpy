@@ -1,5 +1,6 @@
 from setlx.splaynode import SplayNode
 from setlx.splaytree import SplayTree
+from setlx.tree import Tree
 import copy
 from types import GeneratorType
 import itertools
@@ -9,7 +10,7 @@ import random
 class Set():
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
     def __init__(self, arg=None, value=None):
-        if isinstance(arg, SplayTree):  # not sure if this is necessary
+        if isinstance(arg, Tree):  # not sure if this is necessary
             self.tree = arg
         elif arg == None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
             self.tree = SplayTree(arg, value)
@@ -83,18 +84,14 @@ class Set():
         # add elements/ union of two sets
         new_set = self._clone()
 
-        if not isinstance(other, (Set, SplayTree)):
-            new_set.insert(other)
-        elif len(other) != 0:  # is not empty set
-            for o in other:
-                new_set.insert(o)
+        new_set.insert(other)
         return new_set
 
     def __sub__(self, other):
         # remove from self
         new_set = self._clone()  # TODO: deepcopy?
 
-        if not isinstance(other, (Set, SplayTree)):
+        if not isinstance(other, (Set, Tree)):
             new_set.tree.delete(other)
         else:
             for o in other:
@@ -128,11 +125,12 @@ class Set():
         # ** operator
         if other == 2:
             new_set = Set()
-            for s1 in self:
+            for s1 in self._clone():
                 for s2 in self:
-                    new_set += (s1, s2)
+                    new_set += Set([[s1, s2]])
             return new_set
-        raise TypeError(f"{other} must be 2 to computer cartesian product")
+        raise TypeError(
+            f"{other} must be 2 to compute cartesian product of a set with itself")
 
     def __and__(self, other):
         pass
@@ -184,15 +182,9 @@ class Set():
         self.tree.delete(key)
 
     def insert(self, key, value=None):
-        if isinstance(key, (set, GeneratorType, range)):
+        if isinstance(key, (set, GeneratorType, range, tuple, list)):
             for k in key:
                 self.tree.insert(k, value)
-        elif isinstance(key, (tuple, list)):
-            if len(key) == 2:
-                self.tree.insert(key[0], key[1])
-            else:
-                for k in key:
-                    self.tree.insert(k, value)
         else:
             self.tree.insert(key, value)
 

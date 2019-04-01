@@ -92,7 +92,6 @@ class BinaryNode():
         return 0
 
     def _find(self, key):
-
         k_key = _Key(key)
         self_key = _Key(self.key)
         if k_key == self_key:

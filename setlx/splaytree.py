@@ -7,10 +7,7 @@ class SplayTree(Tree):
     """ordered binary trees with splaying algorithm"""
 
     def __init__(self, key=None, value=None):
-        self.root = None
-        self.total = 0
-        if key != None:
-            self.insert(key, value)  # ensures that total count is correct
+        super().__init__(key, value)
 
     def insert(self, key, value=None):
         if not isinstance(key, SplayNode):

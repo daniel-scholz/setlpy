@@ -37,7 +37,10 @@ class Tree():
     def _clone(self):
         new_tree = Tree()
         for node in self:
-            new_tree.insert(node[0], node[1])
+            if isinstance(node, tuple):
+                new_tree.insert(node[0], node[1])
+            else:
+                new_tree.insert(node)
         return new_tree
 
     def insert(self, key, value=None):
@@ -117,8 +120,7 @@ class Tree():
             return False
         if other.root != None and self.root != None:
             for node in self:
-                newvariable399 = other.find(node[0])
-                if not newvariable399:
+                if not other.find(node[0]):
                     return False
             return True
 

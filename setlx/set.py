@@ -55,7 +55,9 @@ class Set():
         # print(key, value)
 
     def _clone(self):
-        return Set(self.tree._clone())
+        new_set = Set()
+        new_set.tree = self.tree._clone()
+        return new_set
 
     def __len__(self):
         return self.tree.total
