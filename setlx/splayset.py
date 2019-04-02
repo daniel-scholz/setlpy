@@ -127,7 +127,7 @@ class Set():
             new_set = Set()
             for s1 in self._clone():
                 for s2 in self:
-                    new_set += Set([[s1, s2]])
+                    new_set += [[s1, s2]]
             return new_set
         raise TypeError(
             f"{other} must be 2 to compute cartesian product of a set with itself")
