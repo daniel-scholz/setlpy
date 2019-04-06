@@ -60,5 +60,5 @@ def procedure(func):
             else:
                 kwargs_cp[arg_name] = _deepcopy(value)
 
-        return func(*args, **kwargs)
+        return func(*args_cp, **kwargs_cp)
     return decorator

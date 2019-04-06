@@ -22,6 +22,7 @@ from .vector import Vector
 from .matrix import Matrix
 from .utils import is_number, is_integer
 from .set import Set
+from .errors import UserException
 
 from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
 from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
@@ -671,7 +672,7 @@ def str(arg):
 
 
 def throw(e):
-    raise Exception(e)
+    raise UserException(e)
 
 
 def toLowerCase(string):
