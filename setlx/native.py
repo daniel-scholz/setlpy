@@ -543,18 +543,8 @@ def permutations(iterable):
     return list(itertools.permutations(iterable))
 
 
-def pow(x, y):
-    if type(y) == Set:
-        if x == 2:
-            raise NotImplementedError("power set is not yet implemented")
-            # if len(y) == 0:
-            #     return Set(Set())
-            # element = y[0]
-
-            # return pow(2, y[1:]) + Set(element) + pow(2, y[1:])
-
-        raise ValueError(f"{x} must be 2 to compute power set")
-    return x ** y
+def pow(s):
+    raise NotImplementedError("power set is not yet implemented")
 
 
 def print(*args):
