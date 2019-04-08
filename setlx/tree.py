@@ -32,7 +32,7 @@ class Tree():
         return self.root[key]
 
     def __setitem__(self, key, value):
-        self.total += self.root.insert(BinaryNode(key, value))
+        self.insert(BinaryNode(key, value))
 
     def _clone(self):
         new_tree = Tree()
@@ -93,6 +93,9 @@ class Tree():
             return str(self.root)
         return "[]"
 
+    def __repr__(self):
+        return str(self)
+
     def __eq__(self, other):
         if other == None:
             return False
@@ -116,11 +119,12 @@ class Tree():
         """
         if self.root == None:  # left set is empty
             return True
-        if other.root == None:  # right set is empty
+        if other.root == None and self.root != None:  # right set is empty
             return False
+
         if other.root != None and self.root != None:
             for node in self:
-                if not other.find(node[0]):
+                if other.find(node) == None:
                     return False
             return True
 
@@ -128,16 +132,16 @@ class Tree():
         """
         implements check for real subset, NOT real less
         """
-        return self != other and self <= other
+        return not self.__eq__(other) and self.__le__(other)
 
     def __gt__(self, other):
         """
-        returns self > other 
+        returns self > other
         """
-        return other < self
+        return other.__lt__(self)
 
     def __ge__(self, other):
         """
-        returns self >= other  
+        returns self >= other
         """
-        return other <= self
+        return other.__le__(self)
