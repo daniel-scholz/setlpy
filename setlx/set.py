@@ -1,5 +1,6 @@
 from setlx.node import BinaryNode
 from setlx.tree import Tree
+from setlx.list import List
 import copy
 from types import GeneratorType
 import itertools
@@ -13,6 +14,8 @@ class Set():
             self.tree = arg
         elif arg == None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
             self.tree = Tree(arg, value)
+        elif isinstance(arg, List) and len(arg) == 2:
+            self.tree = Tree(arg[1], arg[2])
         else:
             try:
                 """
@@ -65,13 +68,23 @@ class Set():
     def __from__(self):  # from
         result = self.__arb__()
         self -= result
-        return result
+        return result.key
+
+    def __fromB__(self):
+        result = self.first()
+        self -= result
+        return result.key
+
+    def __fromE__(self):
+        result = self.last()
+        self -= result
+        return result.key
 
     def first(self):
-        return self.tree[0]
+        return self.tree.root._get_item_by_index(0)
 
     def last(self):
-        return self.tree[-1]
+        return self.tree.root._get_item_by_index(len(self)-1)
 
     def __str__(self):
         return "{" + ", ".join(("'" + i + "'") if type(i) == str else str(i) for i in self.tree) + "}"

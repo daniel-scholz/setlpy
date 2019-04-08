@@ -56,6 +56,8 @@ class Tree():
         return self.root._find(key) if self.root != None else None
 
     def delete(self, key):
+        if isinstance(key,BinaryNode):
+            key = key.key
         tree = self
         if tree.root != None:
             root = tree.root

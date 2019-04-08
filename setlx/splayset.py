@@ -39,9 +39,9 @@ class Set():
         if self.tree.total < 1:
             return None
         if self.tree.total % 2 == 0:
-            return self.tree[0].key
+            return self.first().key
         else:
-            return self.tree[-1].key
+            return self.last().key
 
     def __getitem__(self, index):
         # if isinstance(index, slice):
@@ -63,14 +63,14 @@ class Set():
 
     def __from__(self):  # from
         result = self.__arb__()
-        self -= result
+        self.delete(result)
         return result
 
     def first(self):
-        return self.tree[0]
+        return self.tree.root._get_item_by_index(0)
 
     def last(self):
-        return self.tree[-1]
+        return self.tree.root._get_item_by_index(len(self)-1)
 
     def __str__(self):
         return "{" + ", ".join(("'" + i + "'") if type(i) == str else str(i) for i in self.tree) + "}"
@@ -82,8 +82,9 @@ class Set():
 
     def __add__(self, other):
         # add elements/ union of two sets
+        if not isinstance(other, Set):
+            raise TypeError("sets can only be joined with sets")
         new_set = self._clone()
-
         new_set.insert(other)
         return new_set
 
@@ -131,6 +132,13 @@ class Set():
             return new_set
         raise TypeError(
             f"{other} must be 2 to compute cartesian product of a set with itself")
+
+    def powerset(self):
+        if self._is_empty():
+            return Set(Set())
+        copy_set = self._clone()
+        element = copy_set.__from__()
+        pass
 
     def __and__(self, other):
         pass
@@ -182,9 +190,9 @@ class Set():
         self.tree.delete(key)
 
     def insert(self, key, value=None):
-        if isinstance(key, (set, GeneratorType, range, tuple, list)):
+        if isinstance(key, (Set, set, GeneratorType, range, tuple, list)):
             for k in key:
-                self.tree.insert(k, value)
+                self.tree.insert(k)
         else:
             self.tree.insert(key, value)
 
@@ -203,3 +211,6 @@ class Set():
             if isinstance(s, tuple) and len(s) == 2:
                 new_set += s[1]
         return new_set
+
+    def _is_empty(self):
+        return self.tree.total == 0
