@@ -4,6 +4,7 @@ setlx/__init__.py
 setlx/built_ins.py
 setlx/decorators.py
 setlx/errors.py
+setlx/list.py
 setlx/math.py
 setlx/matrix.py
 setlx/native.py
