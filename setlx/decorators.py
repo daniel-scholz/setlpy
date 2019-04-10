@@ -62,3 +62,10 @@ def procedure(func):
 
         return func(*args_cp, **kwargs_cp)
     return decorator
+
+
+def to_method(instance, func):
+    def decorator(*args,**kwargs):
+        kwargs["self"]=instance
+        return func(*args,**kwargs)
+    return decorator
