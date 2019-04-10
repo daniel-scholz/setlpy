@@ -41,7 +41,9 @@ class Set():
         return new_set
 
     def __next__(self):
-        return next(self.tree).key
+        nxt = next(self.tree)
+        if nxt !=None:
+            return nxt.key
 
     def __arb__(self):
         if self.tree.total < 1:
