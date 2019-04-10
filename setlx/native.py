@@ -61,7 +61,7 @@ def arb(value):
         return v
     try:
         return value.__arb__()
-    except:
+    except NameError:
         raise Exception(f"Argument '{value}' is not a collection value.")
 
 
@@ -160,7 +160,7 @@ def first(value):
         return value[0]
     try:
         return value.first()
-    except:
+    except NameError:
         raise Exception(
             f"Can not get last member from operand; '{value}' is not a collection value.")
 
@@ -180,7 +180,7 @@ def v_from(value):
         return v
     try:
         return value.__from__()
-    except:
+    except NameError:
         raise Exception(f"Argument '{value}' is not a collection value.")
 
 
@@ -191,7 +191,7 @@ def fromB(value):
         return v
     try:
         return value.__fromB__()
-    except:
+    except NameError:
         raise Exception(f"Argument '{value}' is not a collection value.")
 
 
@@ -202,7 +202,7 @@ def fromE(value):
         return v
     try:
         return value.__fromE__()
-    except:
+    except NameError:
         raise Exception(f"Argument '{value}' is not a collection value.")
 
 
@@ -421,21 +421,17 @@ def last(value):
         return value[-1]
     try:
         return value.last()
-    except:
+    except NameError:
         raise Exception(
             f"Can not get last member from operand; '{value}' is not a collection value.")
 
 
 def load(file, source_file=""):
-    source = os.path.dirname(os.path.realpath(source_file))
-    path = os.path.join(source, file)
-    path = os.path.splitext(path)[0]+".py"
-    with open(path) as f:
-        exec(f.read())
+    raise Exception("load is not supported")
 
 
 def loadLibrary(*args):
-    raise NotImplementedError('loadLibrary is not implemented yet')
+    raise Exception("loadLibrary is not supported")
 
 
 def logo(*args):
@@ -597,6 +593,8 @@ def reverse(value):
 
 
 def rnd(numberOrCollection, numberOfChoices=None):
+    if isinstance(numberOrCollection,Set):
+        return numberOrCollection.__rnd__()
     if isinstance(numberOrCollection, _int):
         return _random.randint(0, numberOrCollection)
     if numberOfChoices != None:

@@ -1,4 +1,5 @@
 from itertools import product as _product
+from functools import reduce
 
 
 def cartesian_product(*iterables):
@@ -9,15 +10,17 @@ def cartesian_product(*iterables):
 _sum = sum
 
 
-def sum(iterable):
-    return _sum(iterable)
+def sum(iterable, default=None):
+    if len(iterable) == 0:
+        return default
+    return reduce(lambda x, y: x+y, iterable) or default
 
 
-def product(iterable):
+def product(iterable, default=None):
     p = 1
     for i in iterable:
         p *= i
-    return p
+    return p or default
 
 
 def map(value):
