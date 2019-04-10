@@ -1,12 +1,13 @@
 from setlx.node import BinaryNode
+from setlx.list import List
 
 
 class Tree():
-    def __init__(self, key=None, value=None):
+    def __init__(self, key=None):
         self.root = None
         self.total = 0
         if key != None:
-            self.insert(key, value)  # ensures that total count is correct
+            self.insert(key)  # ensures that total count is correct
     """Technically speaking, Python iterator object must implement two special methods, __iter__() and __next__(), collectively called the iterator protocol.(https://www.programiz.com/python-programming/iterator)"""
 
     def __iter__(self):
@@ -20,32 +21,29 @@ class Tree():
         if self.index < self.total:
             old_i = self.index
             self.index += 1
-            node = self.root._get_item_by_index(old_i)
-            if node.value != None:
-                return node.key, node.value
-            else:
-                return node.key
+            return self.root._get_item_by_index(old_i)
         else:
             raise StopIteration
+
+
+    """ functions to implement map feature"""
 
     def __getitem__(self, key):
         return self.root[key]
 
     def __setitem__(self, key, value):
-        self.insert(BinaryNode(key, value))
+        self.insert(List([key, value]))
+    """"""
 
     def _clone(self):
         new_tree = Tree()
-        for node in self:
-            if isinstance(node, tuple):
-                new_tree.insert(node[0], node[1])
-            else:
-                new_tree.insert(node)
+        new_tree.root = self.root
+        new_tree.total = self.total
         return new_tree
 
-    def insert(self, key, value=None):
-        node = BinaryNode(key, value) if not isinstance(
-            key, BinaryNode) else key
+    def insert(self, key):
+        node = BinaryNode(key) if not isinstance(
+            key, BinaryNode) else key  # checks if insert is called from splaynode class
         if self.root == None:
             self.root = node
             self.total += 1
@@ -56,8 +54,6 @@ class Tree():
         return self.root._find(key) if self.root != None else None
 
     def delete(self, key):
-        if isinstance(key,BinaryNode):
-            key = key.key
         tree = self
         if tree.root != None:
             root = tree.root
@@ -80,15 +76,6 @@ class Tree():
 
         else:
             raise ValueError(f"tree is empty")
-
-    # def min(self):
-    #     """ returns node with min key"""
-    #     if self.root != None:
-    #         if self.root.left == None:
-    #             return self.root
-    #         else:
-    #             return self.root.min()
-    #     raise ValueError(f"tree is empty")
 
     def __str__(self):
         if self.root != None:

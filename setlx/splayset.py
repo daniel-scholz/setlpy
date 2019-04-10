@@ -1,6 +1,8 @@
 from setlx.splaynode import SplayNode
 from setlx.splaytree import SplayTree
 from setlx.tree import Tree
+from setlx.list import List
+
 import copy
 from types import GeneratorType
 import itertools
@@ -9,11 +11,16 @@ import random
 
 class Set():
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
-    def __init__(self, arg=None, value=None):
-        if isinstance(arg, Tree):  # not sure if this is necessary
+    def __init__(self, arg=None):
+        if isinstance(arg, Tree):  # used for cloning the set
             self.tree = arg
         elif arg == None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
-            self.tree = SplayTree(arg, value)
+            self.tree = SplayTree(arg)
+
+        # map feature is implemented in tree class
+
+        # elif isinstance(arg, List) and len(arg) == 2:
+        #  self.tree = Tree(key=arg[1], value=arg[2])
         else:
             try:
                 """
@@ -33,27 +40,21 @@ class Set():
         return self
 
     def __next__(self):
-        return next(self.tree)
+        return next(self.tree).key
 
     def __arb__(self):
         if self.tree.total < 1:
             return None
         if self.tree.total % 2 == 0:
-            return self.first().key
+            return self.first()
         else:
-            return self.last().key
+            return self.last()
 
     def __getitem__(self, index):
-        # if isinstance(index, slice):
-        #     start = index.start if index.start != None else 0
-        #     stop = index.stop if index.step != None else self.tree.total
-        #     step = index.step if index.step != None else 1
-        #     return Set(self[i] for i in range(start, stop, step))
-        return self.tree[index]
+        return self.tree[index].key
 
     def __setitem__(self, key, value):
         self.tree[key] = value
-        # print(key, value)
 
     def _clone(self):
         return Set(self.tree._clone())
@@ -66,17 +67,27 @@ class Set():
         self.delete(result)
         return result
 
+    def __fromB__(self):
+        result = self.first()
+        self -= result
+        return result
+
+    def __fromE__(self):
+        result = self.last()
+        self -= result
+        return result
+
     def first(self):
-        return self.tree.root._get_item_by_index(0)
+        return self.tree.root._get_item_by_index(0).key
 
     def last(self):
-        return self.tree.root._get_item_by_index(len(self)-1)
+        return self.tree.root._get_item_by_index(len(self)-1).key
 
     def __str__(self):
-        return "{" + ", ".join(("'" + i + "'") if type(i) == str else str(i) for i in self.tree) + "}"
+        return "{" + ", ".join(("'" + str(i) + "'") if type(i) == str else str(i) for i in self) + "}"
 
     def __repr__(self):
-        return self.__str__()
+        return str(self)
 
     """https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types"""
 
@@ -85,13 +96,13 @@ class Set():
         if not isinstance(other, Set):
             raise TypeError("sets can only be joined with sets")
         new_set = self._clone()
-        new_set.insert(other)
+        for element in other:
+            new_set.insert(element)
         return new_set
 
     def __sub__(self, other):
         # remove from self
         new_set = self._clone()  # TODO: deepcopy?
-
         if not isinstance(other, (Set, Tree)):
             new_set.tree.delete(other)
         else:
@@ -189,18 +200,14 @@ class Set():
     def delete(self, key):
         self.tree.delete(key)
 
-    def insert(self, key, value=None):
-        if isinstance(key, (Set, set, GeneratorType, range, tuple, list)):
-            for k in key:
-                self.tree.insert(k)
-        else:
-            self.tree.insert(key, value)
+    def insert(self, key):
+        self.tree.insert(key)
 
     def clear(self):
-        self = Set()
+        self.tree = SplayTree()
 
     def __rnd__(self):
-        return self[random.randint(0, self.tree.total)]
+        return self.tree.root._get_item_by_index(random.randint(0,len(self)-1)).key
 
     def __domain__(self):
         return Set(k[0] for k in self)

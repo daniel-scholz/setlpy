@@ -2,24 +2,22 @@ import random
 import string
 import time
 
+import setlx
 from setlx.node import BinaryNode
-from setlx.tree import Tree
+# from setlx.set import Set
 from setlx.splayset import Set as SplaySet
-from setlx.set import Set
-random = random.Random(27121998)
+from setlx.list import List
+random = random.Random(0)
 max_i = 100
-max_ii = 10
+max_ii = 50
 rands = [random.randint(1, max_i) for i in range(0, max_ii)]
-
 s1 = SplaySet()
 s2 = SplaySet()
 for i in range(0, max_ii):
-    s1 += rands[max_ii - i - 1]
-    s2 += rands[i]
-
-for s in s1:
-    for ss in s2:
-        print(f"{s}:{ss:}")
-
-print(s1, s2, sep="\n")
-print(s1 ** 2)
+    s1.insert(List(["speck",rands[max_ii - i - 1]]))
+    s2 += SplaySet(rands[i])
+print(s1)
+print(s2)
+print(s1["speck"])
+s1["speck"] = "siebzehn"
+print(s1["speck"])

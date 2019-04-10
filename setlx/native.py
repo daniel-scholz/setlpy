@@ -21,7 +21,7 @@ from collections import Counter
 from .vector import Vector
 from .matrix import Matrix
 from .utils import is_number, is_integer
-from .set import Set
+from .splayset import Set
 from .errors import UserException
 
 from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
@@ -191,7 +191,7 @@ def fromB(value):
         return v
     try:
         return value.__fromB__()
-    except:
+    except NotImplementedError:
         raise Exception(f"Argument '{value}' is not a collection value.")
 
 
@@ -597,6 +597,8 @@ def reverse(value):
 
 
 def rnd(numberOrCollection, numberOfChoices=None):
+    if isinstance(numberOrCollection, Set):
+        return numberOrCollection.__rnd__()
     if isinstance(numberOrCollection, _int):
         return _random.randint(0, numberOrCollection)
     if numberOfChoices != None:

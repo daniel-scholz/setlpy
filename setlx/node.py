@@ -1,3 +1,6 @@
+from setlx import list
+
+
 class _Key():
     """
     class for elements in a Node of a BinaryTree
@@ -48,23 +51,30 @@ class _Key():
 
 
 class BinaryNode():
-    def __init__(self, key, value=None, left=None, right=None):
+    def __init__(self, key, left=None, right=None):
+        # stores key and value in the form setlx.List([key,value])
         self.key = key
-        self.value = value
+        # self.value = value
         self.left = left
         self.right = right
 
     def __str__(self):
-        s = "" if self.value == None else f":{self.value}"
-        return f"[{self.key}{s},{self.left},{self.right}]"
+        key, value = None, None
+        if isinstance(self.key, list.List) and len(self.key) == 2:  # map feature is being used
+            key = self.key[1]  # indices start at 1!
+            value = self.key[2]
+        else:
+            key = self.key
+        s = "" if value == None else f":{value}"
+        return f"[{key}{s},{self.left},{self.right}]"
 
     def __repr__(self):
         return str(self)
 
     def __getitem__(self, key):
         for node in self._traverse():
-            if node.key == key:
-                return node.value
+            if isinstance(node.key, list.List) and len(node.key) == 2 and key == node.key[1]:
+                return node
         # returns None if Node got no value
 
     def _get_item_by_index(self, index):
@@ -73,17 +83,19 @@ class BinaryNode():
                 return node
 
     def insert(self, node):
-        node_key = _Key(node.key)  # make keys comparable
-        self_key = _Key(self.key)
-        if self_key == node_key:
-            self.value = node.value
+        node_key = _Key(node.key[1]) if isinstance(
+            node.key, list.List) else _Key(node.key)  # make keys comparable
+        self_key = _Key(self.key[1]) if isinstance(
+            self.key, list.List) else _Key(self.key)
+        if isinstance(self.key, list.List) and isinstance(node.key, list.List) and self_key == node_key:
+            self.key[2] = node.key[2]  # indices start at 1
             return 0
         if node_key > self_key:
             if self.right != None:
                 return self.right.insert(node)
             self.right = node
             return 1
-        elif node_key != self_key:
+        if node_key != self_key:
             # same effect as < operator but works for python sets as well
             if self.left != None:
                 return self.left.insert(node)
@@ -96,7 +108,7 @@ class BinaryNode():
         self_key = _Key(self.key)
         if k_key == self_key:
             # TODO: discuss behavior of find
-            return self.value if self.value != None else self.key
+            return self.key
         if k_key < self_key and self.left != None:
             return self.left._find(key)
         if k_key > self_key and self.right != None:
@@ -108,9 +120,12 @@ class BinaryNode():
         Deletes the parameter key from the set
         """
         parent = self
-        if parent.left != None and _Key(key) < _Key(parent.key):
+        k_key = _Key(key)
+        parent_key = _Key(parent.key)
+
+        if parent.left != None and k_key < parent_key:
             to_delete = parent.left
-            if _Key(to_delete.key) == _Key(key):
+            if _Key(to_delete.key) == k_key:
                 if to_delete.right == None:
                     parent.left = to_delete.left
                 elif to_delete.left == None:
@@ -125,7 +140,7 @@ class BinaryNode():
                     # current.key = parent.del_min()
             else:
                 to_delete.delete(key)
-        elif parent.right and key > parent.key:
+        elif parent.right and k_key > parent_key:
             to_delete = parent.right
             if _Key(to_delete.key) == _Key(key):
                 if to_delete.right == None:
@@ -179,10 +194,9 @@ class BinaryNode():
 
         if not s_none and not o_none:
             key___eq = self.key == other.key
-            value___eq = self.value == other.value
             left__eq = self.left == other.left
             right_eq = self.right == other.right
-            return key___eq and value___eq and left__eq and right_eq
+            return key___eq and left__eq and right_eq
 
         return o_none and s_none
 
