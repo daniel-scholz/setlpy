@@ -52,7 +52,10 @@ class Set():
             return self.last()
 
     def __getitem__(self, index):
-        return self.tree[index].key
+        result = self.tree[index]
+        if result != None:
+
+            return result.key[2]
 
     def __setitem__(self, key, value):
         self.tree[key] = value
@@ -94,7 +97,7 @@ class Set():
 
     def __add__(self, other):
         # add elements/ union of two sets
-        if not isinstance(other, (list,Set)):
+        if not isinstance(other, (list, Set)):
             raise TypeError("sets can only be joined with sets")
         new_set = self._clone()
         for element in other:
@@ -154,7 +157,7 @@ class Set():
         power_set = copy_set.powerset()
         result = Set()
         for item in power_set:
-            result +=  Set(Set(element) + item) + Set(item)
+            result += Set(Set(element) + item) + Set(item)
         return result
 
     def __and__(self, other):
