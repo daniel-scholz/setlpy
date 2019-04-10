@@ -6,22 +6,32 @@ from .splaynode import SplayNode
 class SplayTree(Tree):
     """ordered binary trees with splaying algorithm"""
 
-    def __init__(self, key=None, value=None):
-        super().__init__(key, value)
+    def __init__(self, key=None):
+        super().__init__(key)
 
-    def insert(self, key, value=None):
+    def insert(self, key):
         if not isinstance(key, SplayNode):
-            node = SplayNode(key, value)
+            node = SplayNode(key)
         else:
             node = key
         super().insert(node)
         self.splay(node)
 
-    def find(self, node):
-        result = super().find(node)
+    def find(self, key):
+        return self._find(SplayNode(key))
+
+    def _find(self, node):
+        # requires node as parameter in order to splay it afterwards
+        result = super().find(node.key)
         if result != None:
             self.splay(node)
         return result
+
+    def _clone(self):
+        new_tree = SplayTree()
+        new_tree.root = self.root
+        new_tree.total = self.total
+        return new_tree
     #####################################################################
     #   ZIG: rechts
     #   ZAG: links

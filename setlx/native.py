@@ -21,7 +21,7 @@ from collections import Counter
 from .vector import Vector
 from .matrix import Matrix
 from .utils import is_number, is_integer
-from .set import Set
+from .splayset import Set
 from .errors import UserException
 
 from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
@@ -563,8 +563,8 @@ def rational(*args):
     raise NotImplementedError('rational is not implemented yet')
 
 
-def read(*args):
-    raise NotImplementedError('read is not implemented yet')
+def read(text):
+    return input(text)
 
 
 def readFile(file):
@@ -593,13 +593,15 @@ def reverse(value):
 
 
 def rnd(numberOrCollection, numberOfChoices=None):
-    if isinstance(numberOrCollection,Set):
+    if isinstance(numberOrCollection, Set):
         return numberOrCollection.__rnd__()
     if isinstance(numberOrCollection, _int):
         return _random.randint(0, numberOrCollection)
     if numberOfChoices != None:
         raise NotImplementedError("numberOfChoices is not implemented yet")
-    rnd_index = _random.randint(0, len(numberOrCollection)-1)
+    if len(numberOrCollection) == 0:
+        return None
+    rnd_index = _random.randint(1, len(numberOrCollection))
     return numberOrCollection[rnd_index]
 
 

@@ -1,6 +1,8 @@
 from setlx.splaynode import SplayNode
 from setlx.splaytree import SplayTree
 from setlx.tree import Tree
+from setlx.list import List
+
 import copy
 from types import GeneratorType
 import itertools
@@ -9,11 +11,16 @@ import random
 
 class Set():
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
-    def __init__(self, arg=None, value=None):
-        if isinstance(arg, Tree):  # not sure if this is necessary
+    def __init__(self, arg=None):
+        if isinstance(arg, Tree):  # used for cloning the set
             self.tree = arg
         elif arg == None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
-            self.tree = SplayTree(arg, value)
+            self.tree = SplayTree(arg)
+
+        # map feature is implemented in tree class
+
+        # elif isinstance(arg, List) and len(arg) == 2:
+        #  self.tree = Tree(key=arg[1], value=arg[2])
         else:
             try:
                 """
@@ -27,33 +34,33 @@ class Set():
                     f"set cannot be created from {type(arg)}")
 
     def __iter__(self):
-        self.tree.index = 0
+        new_set = self._clone()
+        new_set.tree.index = 0
         # minimum of the tree
         # self.tree.current_node = self.tree[0] if self.tree.total > 0 else None
-        return self
+        return new_set
 
     def __next__(self):
-        return next(self.tree)
+        nxt = next(self.tree)
+        if nxt !=None:
+            return nxt.key
 
     def __arb__(self):
         if self.tree.total < 1:
             return None
         if self.tree.total % 2 == 0:
-            return self.first().key
+            return self.first()
         else:
-            return self.last().key
+            return self.last()
 
     def __getitem__(self, index):
-        # if isinstance(index, slice):
-        #     start = index.start if index.start != None else 0
-        #     stop = index.stop if index.step != None else self.tree.total
-        #     step = index.step if index.step != None else 1
-        #     return Set(self[i] for i in range(start, stop, step))
-        return self.tree[index]
+        result = self.tree[index]
+        if result != None:
+
+            return result.key[2]
 
     def __setitem__(self, key, value):
         self.tree[key] = value
-        # print(key, value)
 
     def _clone(self):
         return Set(self.tree._clone())
@@ -66,39 +73,49 @@ class Set():
         self.delete(result)
         return result
 
+    def __fromB__(self):
+        result = self.first()
+        self -= result
+        return result
+
+    def __fromE__(self):
+        result = self.last()
+        self -= result
+        return result
+
     def first(self):
-        return self.tree.root._get_item_by_index(0)
+        return self.tree.root._get_item_by_index(0).key
 
     def last(self):
-        return self.tree.root._get_item_by_index(len(self)-1)
+        return self.tree.root._get_item_by_index(len(self)-1).key
 
     def __str__(self):
-        return "{" + ", ".join(("'" + i + "'") if type(i) == str else str(i) for i in self.tree) + "}"
+        return "{" + ", ".join(("'" + str(i) + "'") if type(i) == str else str(i) for i in self) + "}"
 
     def __repr__(self):
-        return self.__str__()
+        return str(self)
 
     """https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types"""
 
     def __add__(self, other):
         # add elements/ union of two sets
-        if not isinstance(other, Set):
+        if not isinstance(other, (list, Set)):
             raise TypeError("sets can only be joined with sets")
         new_set = self._clone()
-        new_set.insert(other)
+        for element in other:
+            new_set.insert(element)
         return new_set
 
     def __sub__(self, other):
         # remove from self
         new_set = self._clone()  # TODO: deepcopy?
-
         if not isinstance(other, (Set, Tree)):
             new_set.tree.delete(other)
         else:
             for o in other:
                 if o in self:
                     try:
-                        new_set.tree.delete(o)
+                        new_set.delete(o)
                     except (ValueError):
                         raise TypeError(
                             f"could not delete {o} from set")
@@ -126,9 +143,9 @@ class Set():
         # ** operator
         if other == 2:
             new_set = Set()
-            for s1 in self._clone():
+            for s1 in self:
                 for s2 in self:
-                    new_set += [[s1, s2]]
+                    new_set += Set(List([[s1, s2]]))
             return new_set
         raise TypeError(
             f"{other} must be 2 to compute cartesian product of a set with itself")
@@ -136,9 +153,14 @@ class Set():
     def powerset(self):
         if self._is_empty():
             return Set(Set())
+
         copy_set = self._clone()
         element = copy_set.__from__()
-        pass
+        power_set = copy_set.powerset()
+        result = Set()
+        for item in power_set:
+            result += Set(Set(element) + item) + Set(item)
+        return result
 
     def __and__(self, other):
         pass
@@ -189,18 +211,14 @@ class Set():
     def delete(self, key):
         self.tree.delete(key)
 
-    def insert(self, key, value=None):
-        if isinstance(key, (Set, set, GeneratorType, range, tuple, list)):
-            for k in key:
-                self.tree.insert(k)
-        else:
-            self.tree.insert(key, value)
+    def insert(self, key):
+        self.tree.insert(key)
 
     def clear(self):
-        self = Set()
+        self.tree = SplayTree()
 
     def __rnd__(self):
-        return self[random.randint(0, self.tree.total)]
+        return self.tree.root._get_item_by_index(random.randint(0, len(self)-1)).key
 
     def __domain__(self):
         return Set(k[0] for k in self)

@@ -2,24 +2,21 @@ import random
 import string
 import time
 
+import setlx
 from setlx.node import BinaryNode
-from setlx.tree import Tree
-from setlx.splayset import Set as SplaySet
-from setlx.set import Set
-random = random.Random(27121998)
+# from setlx.set import Set
+from setlx.splayset import Set 
+from setlx.list import List
+random = random.Random(0)
 max_i = 100
-max_ii = 10
+max_ii = 4
 rands = [random.randint(1, max_i) for i in range(0, max_ii)]
+s1 = Set()
+list1 = []
+for i in range(1, max_ii):
+    newvariable148 = List([i,max_i])
+    s1.insert(newvariable148)
+    list1+= [i + 1000]
 
-s1 = SplaySet()
-s2 = SplaySet()
-for i in range(0, max_ii):
-    s1 += rands[max_ii - i - 1]
-    s2 += rands[i]
-
-for s in s1:
-    for ss in s2:
-        print(f"{s}:{ss:}")
-
-print(s1, s2, sep="\n")
-print(s1 ** 2)
+# print(s1.powerset())
+print(s1[1])
