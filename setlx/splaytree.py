@@ -17,7 +17,10 @@ class SplayTree(Tree):
         super().insert(node)
         self.splay(node)
 
-    def find(self, node):
+    def find(self, key):
+        return self._find(SplayNode(key))
+
+    def _find(self, node):
         # requires node as parameter in order to splay it afterwards
         result = super().find(node.key)
         if result != None:

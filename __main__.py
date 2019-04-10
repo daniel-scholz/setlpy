@@ -9,15 +9,12 @@ from setlx.splayset import Set as SplaySet
 from setlx.list import List
 random = random.Random(0)
 max_i = 100
-max_ii = 50
+max_ii = 10
 rands = [random.randint(1, max_i) for i in range(0, max_ii)]
-s1 = SplaySet()
-s2 = SplaySet()
-for i in range(0, max_ii):
-    s1.insert(List(["speck",rands[max_ii - i - 1]]))
-    s2 += SplaySet(rands[i])
-print(s1)
-print(s2)
-print(s1["speck"])
-s1["speck"] = "siebzehn"
-print(s1["speck"])
+s1 = SplaySet(range(1, max_ii))
+s1.find(1)
+s1.find(2)
+for a in s1:
+    for b in s1:
+        print(a, b)
+print(s1**2)

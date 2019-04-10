@@ -34,10 +34,11 @@ class Set():
                     f"set cannot be created from {type(arg)}")
 
     def __iter__(self):
-        self.tree.index = 0
+        new_set= self._clone()
+        new_set.tree.index = 0
         # minimum of the tree
         # self.tree.current_node = self.tree[0] if self.tree.total > 0 else None
-        return self
+        return new_set
 
     def __next__(self):
         return next(self.tree).key
@@ -109,7 +110,7 @@ class Set():
             for o in other:
                 if o in self:
                     try:
-                        new_set.tree.delete(o)
+                        new_set.delete(o)
                     except (ValueError):
                         raise TypeError(
                             f"could not delete {o} from set")
@@ -137,9 +138,9 @@ class Set():
         # ** operator
         if other == 2:
             new_set = Set()
-            for s1 in self._clone():
+            for s1 in self:
                 for s2 in self:
-                    new_set += [[s1, s2]]
+                    new_set += Set(List([[s1, s2]]))
             return new_set
         raise TypeError(
             f"{other} must be 2 to compute cartesian product of a set with itself")
