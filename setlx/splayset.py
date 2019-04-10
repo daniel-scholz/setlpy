@@ -34,7 +34,7 @@ class Set():
                     f"set cannot be created from {type(arg)}")
 
     def __iter__(self):
-        new_set= self._clone()
+        new_set = self._clone()
         new_set.tree.index = 0
         # minimum of the tree
         # self.tree.current_node = self.tree[0] if self.tree.total > 0 else None
@@ -94,7 +94,7 @@ class Set():
 
     def __add__(self, other):
         # add elements/ union of two sets
-        if not isinstance(other, Set):
+        if not isinstance(other, (list,Set)):
             raise TypeError("sets can only be joined with sets")
         new_set = self._clone()
         for element in other:
@@ -148,9 +148,14 @@ class Set():
     def powerset(self):
         if self._is_empty():
             return Set(Set())
+
         copy_set = self._clone()
         element = copy_set.__from__()
-        pass
+        power_set = copy_set.powerset()
+        result = Set()
+        for item in power_set:
+            result +=  Set(Set(element) + item) + Set(item)
+        return result
 
     def __and__(self, other):
         pass
@@ -208,7 +213,7 @@ class Set():
         self.tree = SplayTree()
 
     def __rnd__(self):
-        return self.tree.root._get_item_by_index(random.randint(0,len(self)-1)).key
+        return self.tree.root._get_item_by_index(random.randint(0, len(self)-1)).key
 
     def __domain__(self):
         return Set(k[0] for k in self)

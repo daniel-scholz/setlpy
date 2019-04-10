@@ -90,17 +90,18 @@ class BinaryNode():
         if isinstance(self.key, list.List) and isinstance(node.key, list.List) and self_key == node_key:
             self.key[2] = node.key[2]  # indices start at 1
             return 0
-        if node_key > self_key:
-            if self.right != None:
-                return self.right.insert(node)
-            self.right = node
-            return 1
-        if node_key != self_key:
+        if node_key < self_key:
             # same effect as < operator but works for python sets as well
             if self.left != None:
                 return self.left.insert(node)
             self.left = node
             return 1
+        if node_key != self_key:
+            if self.right != None:
+                return self.right.insert(node)
+            self.right = node
+            return 1
+       
         return 0
 
     def _find(self, key):
