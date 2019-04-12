@@ -74,8 +74,26 @@ def args(term):
     raise Exception('args is not supported')
 
 
-def ask(*args):
-    raise NotImplementedError('ask is not implemented yet')
+def ask(question, list_of_answers):
+    print(question)
+    for i in _range(1, len(list_of_answers)+1):
+        try:
+            print(f"{i}) {list_of_answers[i-1]}")
+        except TypeError:
+            raise TypeError(f"{list_of_answers} is not a collection value")
+    result = "-1"
+    if len(list_of_answers) == 1:
+        while True:
+            result = input( f"[Enter] to confirm '{list_of_answers[0]}'" )
+            if  ("" in result):
+                break # emulating a do while loop
+        return list_of_answers[0]
+    else:
+        while not (result >= 1 and result <= len(list_of_answers)):
+            result = int(
+                input(f"Please enter a number between 1 and {len(list_of_answers)}: "))
+    # raise NotImplementedError('ask is not implemented yet')
+    return list_of_answers[result-1]
 
 
 def atan2(y, x):
