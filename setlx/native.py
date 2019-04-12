@@ -50,8 +50,13 @@ def abs(value):
     return _abs(value)
 
 
-def appendFile(*args):
-    raise NotImplementedError('appendFile is not implemented yet')
+def appendFile(file_name, contents):
+    """
+        assumes file's content to be a string
+    """
+    with open(file_name, "a") as f:
+        f.write(contents)
+    # raise NotImplementedError('appendFile is not implemented yet')
 
 
 def arb(value):
