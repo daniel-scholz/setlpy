@@ -82,11 +82,13 @@ def ask(question, list_of_answers):
         except TypeError:
             raise TypeError(f"{list_of_answers} is not a collection value")
     result = "-1"
+    if len(list_of_answers) == 0:
+        return "No answers given!"
     if len(list_of_answers) == 1:
         while True:
-            result = input( f"[Enter] to confirm '{list_of_answers[0]}'" )
-            if  ("" in result):
-                break # emulating a do while loop
+            result = input(f"[Enter] to confirm '{list_of_answers[0]}'")
+            if ("" in result):
+                break  # emulating a do while loop
         return list_of_answers[0]
     else:
         while not (result >= 1 and result <= len(list_of_answers)):
@@ -229,8 +231,9 @@ def fromE(value):
         raise Exception(f"Argument '{value}' is not a collection value.")
 
 
-def get(*args):
-    raise NotImplementedError('get is not implemented yet')
+def get(message=None):
+    return input(message)
+    # raise NotImplementedError('get is not implemented yet')
 
 
 def getOsID():
