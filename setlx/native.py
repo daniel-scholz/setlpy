@@ -643,7 +643,9 @@ def round(n):
     return _round(n)
 
 
-def run(*args):
+def run(command):
+    #  run(command) : Executes a system command and returns the result as a list of output and error messages.
+
     raise NotImplementedError('run is not implemented yet')
 
 
@@ -708,6 +710,7 @@ def toUpperCase(string):
 
 
 def trace(*args):
+    #  * trace(toggle) : Configures output of all assignments.
     raise NotImplementedError('trace is not implemented yet')
 
 
