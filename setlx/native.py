@@ -177,7 +177,8 @@ def execute(code, global_vars=[], local_vars=[]):
 
 
 def fct(*args):
-    raise NotImplementedError('fct is not implemented yet')
+    # fct(term) : Get functional char of a term.
+    raise Exception('fct is not supported')
 
 
 def first(value):
@@ -377,7 +378,8 @@ def isTerm(*args):
 
 
 def isVariable(*args):
-    raise NotImplementedError('isVariable is not implemented yet')
+    """depends on isTerm, which is not supported"""
+    raise Exception('isVariable is not supported')
 
 
 def join(collection, seperator):
@@ -392,7 +394,8 @@ def la_det(matrix):
     return matrix.__det__()  # TODO
 
 
-def la_eigenValues(*args):
+def la_eigenValues(matrix):
+
     raise NotImplementedError('la_eigenValues is not implemented yet')
 
 
@@ -544,7 +547,10 @@ def nextPermutation(list):
     return p
 
 
-def nextProbablePrime(*args):
+def nextProbablePrime(value):
+    if not isinstance(value, _int):
+        raise TypeError(f"arg {value} is not an integer")
+
     raise NotImplementedError('nextProbablePrime is not implemented yet')
 
 
@@ -566,7 +572,9 @@ def permutations(iterable):
 
 
 def pow(s):
-    raise NotImplementedError("power set is not yet implemented")
+    if not isinstance(s, Set):
+        raise TypeError(f"{s} is not of type Set")
+    return s.powerset()
 
 
 def print(*args):
