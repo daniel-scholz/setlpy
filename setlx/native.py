@@ -14,6 +14,7 @@ import random as _random
 import typing
 import itertools
 import platform
+import subprocess
 import setlx2python.transpiler as transpiler
 from copy import deepcopy
 from collections import Counter
@@ -177,7 +178,8 @@ def execute(code, global_vars=[], local_vars=[]):
 
 
 def fct(*args):
-    raise NotImplementedError('fct is not implemented yet')
+    # fct(term) : Get functional char of a term.
+    raise Exception('fct is not supported')
 
 
 def first(value):
@@ -377,7 +379,8 @@ def isTerm(*args):
 
 
 def isVariable(*args):
-    raise NotImplementedError('isVariable is not implemented yet')
+    """depends on isTerm, which is not supported"""
+    raise Exception('isVariable is not supported')
 
 
 def join(collection, seperator):
@@ -392,7 +395,8 @@ def la_det(matrix):
     return matrix.__det__()  # TODO
 
 
-def la_eigenValues(*args):
+def la_eigenValues(matrix):
+
     raise NotImplementedError('la_eigenValues is not implemented yet')
 
 
@@ -544,7 +548,10 @@ def nextPermutation(list):
     return p
 
 
-def nextProbablePrime(*args):
+def nextProbablePrime(value):
+    if not isinstance(value, _int):
+        raise TypeError(f"arg {value} is not an integer")
+
     raise NotImplementedError('nextProbablePrime is not implemented yet')
 
 
@@ -566,7 +573,9 @@ def permutations(iterable):
 
 
 def pow(s):
-    raise NotImplementedError("power set is not yet implemented")
+    if not isinstance(s, Set):
+        raise TypeError(f"{s} is not of type Set")
+    return s.powerset()
 
 
 def print(*args):
@@ -635,8 +644,11 @@ def round(n):
     return _round(n)
 
 
-def run(*args):
-    raise NotImplementedError('run is not implemented yet')
+def run(command):
+    #  run(command) : Executes a system command and returns the result as a list of output and error messages.
+    completed_process = subprocess.run(command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return [completed_process.stdout.decode("UTF-8"), completed_process.stderr.decode("UTF-8")]
+    # raise NotImplementedError('run is not implemented yet')
 
 
 def shuffle(collection):
@@ -700,6 +712,7 @@ def toUpperCase(string):
 
 
 def trace(*args):
+    #  * trace(toggle) : Configures output of all assignments.
     raise NotImplementedError('trace is not implemented yet')
 
 
