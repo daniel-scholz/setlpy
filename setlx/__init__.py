@@ -8,4 +8,5 @@ from .splayset import Set
 from .list import List
 from .vector import Vector
 from .matrix import Matrix
+from .utils import copy
 __version__ = "0.0.1"
