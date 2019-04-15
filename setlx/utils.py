@@ -1,5 +1,6 @@
 from itertools import product
 from numbers import Number
+from copy import deepcopy
 
 
 def to_bool(value):
@@ -40,3 +41,6 @@ def is_number(n):
 
 def is_integer(value):
     return isinstance(value, int)
+
+def copy(value):
+    return deepcopy(value)
