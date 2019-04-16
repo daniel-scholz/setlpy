@@ -648,7 +648,6 @@ def run(command):
     #  run(command) : Executes a system command and returns the result as a list of output and error messages.
     completed_process = subprocess.run(command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return [completed_process.stdout.decode("UTF-8"), completed_process.stderr.decode("UTF-8")]
-    # raise NotImplementedError('run is not implemented yet')
 
 
 def shuffle(collection):

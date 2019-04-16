@@ -42,7 +42,7 @@ class Set():
 
     def __next__(self):
         nxt = next(self.tree)
-        if nxt !=None:
+        if nxt != None:
             return nxt.key
 
     def __arb__(self):
@@ -190,7 +190,14 @@ class Set():
         """
         implements check for real subset, NOT real less
         """
-        return self != other and self.tree <= other.tree
+
+        if self.tree == None:
+            return True
+        if other == None or other.tree == None:
+            return False
+        if self.tree != None and other.tree != None:
+            return self.tree < other.tree
+        return False
 
     def __gt__(self, other):
         """

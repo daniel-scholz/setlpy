@@ -27,7 +27,6 @@ class Tree():
         else:
             raise StopIteration
 
-
     """ functions to implement map feature"""
 
     def __getitem__(self, key):
@@ -108,22 +107,25 @@ class Tree():
         implements check for subset, NOT real less or equal
         other is subset of self; all elements of self are in other
         """
-        if self.root == None:  # left set is empty
-            return True
-        if other.root == None and self.root != None:  # right set is empty
-            return False
-
-        if other.root != None and self.root != None:
-            for node in self:
-                if other.find(node) == None:
-                    return False
-            return True
+        return self.__eq__(other) or self.__lt__(other)
 
     def __lt__(self, other):
         """
         implements check for real subset, NOT real less
         """
-        return not self.__eq__(other) and self.__le__(other)
+        if self.root == None:  # left set is empty
+            return True
+        if other.root == None:  # and self.root != None:  # right set is empty and left set is not
+            return False
+        if other.root != None and self.root != None:
+            for self_node, other_node in zip(self, other):
+                if self_node == other_node:
+                    continue
+                return self_node < other_node
+            if self.total < other.total:  # which one has more elements
+                return True
+
+        return False
 
     def __gt__(self, other):
         """
