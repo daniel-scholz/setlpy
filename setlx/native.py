@@ -24,6 +24,7 @@ from .matrix import Matrix
 from .utils import is_number, is_integer
 from .splayset import Set
 from .errors import UserException
+from .list import List
 
 from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
 from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
@@ -185,6 +186,8 @@ def fct(*args):
 def first(value):
     if isinstance(value, (list, _str)):
         return value[0]
+    if isinstance(value, List):
+        return value[1]
     try:
         return value.first()
     except NameError:
@@ -199,9 +202,12 @@ def floor(value):
 
 
 def v_from(value):
-    if isinstance(value, (list, _str)):
+    if isinstance(value, (list, _str, List)):
         size = len(value)
-        index = 0 if size % 2 == 0 else -1
+        if isinstance(value, List):
+            index = 1 if size % 2 == 0 else -1
+        else:
+            index = 0 if size % 2 == 0 else -1
         v = value[index]
         del value[index]
         return v
@@ -212,9 +218,12 @@ def v_from(value):
 
 
 def fromB(value):
-    if isinstance(value, (list, _str)):
-        v = value[0]
-        del value[0]
+    if isinstance(value, (list, _str, List)):
+        index = 0
+        if isinstance(value, List):
+            index = 1
+        v = value[index]
+        del value[index]
         return v
     try:
         return value.__fromB__()
@@ -223,7 +232,7 @@ def fromB(value):
 
 
 def fromE(value):
-    if isinstance(value, (list, _str)):
+    if isinstance(value, (list, _str, List)):
         v = value[-1]
         del value[-1]
         return v
@@ -359,7 +368,7 @@ def isProbablePrime(n, k=15):
 
 
 def isProcedure(value):
-    return hasattr(value, '__call__')
+    return callable(value)
 
 
 def isRational(n):
@@ -396,16 +405,15 @@ def la_det(matrix):
 
 
 def la_eigenValues(matrix):
-
-    raise NotImplementedError('la_eigenValues is not implemented yet')
+    raise Exception('la_eigenValues is not supported')
 
 
 def la_eigenVectors(*args):
-    raise NotImplementedError('la_eigenVectors is not implemented yet')
+    raise Exception('la_eigenVectors is not supported')
 
 
 def la_hadamard(*args):
-    raise NotImplementedError('la_hadamard is not implemented yet')
+    raise Exception('la_hadamard is not supported')
 
 
 def la_isMatrix(value):
@@ -606,7 +614,7 @@ def readFile(file):
     f = open(file)
     content = f.readlines()
     f.close()
-    return content
+    return List([c.strip() for c in content])
 
 
 def replace(string, pattern, replacement):
@@ -646,12 +654,13 @@ def round(n):
 
 def run(command):
     #  run(command) : Executes a system command and returns the result as a list of output and error messages.
-    completed_process = subprocess.run(command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    completed_process = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return [completed_process.stdout.decode("UTF-8"), completed_process.stderr.decode("UTF-8")]
 
 
 def shuffle(collection):
-    if isinstance(collection, list):
+    if isinstance(collection, (list, List)):
         cp = deepcopy(collection)
         _random.shuffle(cp)
         return cp
@@ -667,7 +676,7 @@ def sleep(milliseconds):
 
 
 def sort(collection):
-    if isinstance(collection, list):
+    if isinstance(collection, (list, List)):
         cp = deepcopy(collection)
         cp.sort()
         return cp

@@ -10,8 +10,11 @@ class cached_procedure:
     def __call__(self, *args, **kwargs):
         return self.decorator(*args,**kwargs)
 
-def to_method(instance, func):
+def to_method(instance, func, static = False):
     def decorator(*args,**kwargs):
-        kwargs["self"]=instance
+        if static:
+            kwargs["self"]=instance
+        else:
+            args = (instance,*args)
         return func(*args,**kwargs)
     return decorator
