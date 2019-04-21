@@ -32,9 +32,13 @@ class List(list):
         if key < 0:
             key = length - key
         if key - 1 >= length:
-            self += [None for _ in range(length - key + 2)]
+            self += [None for _ in range(key-length)]
         return super().__setitem__(key-1, deepcopy(value))
 
     def __add__(self, other):
         result = super().__add__(list(other))
+        return List(deepcopy(result))
+
+    def __mul__(self,other):
+        result = super().__mul__(other)
         return List(deepcopy(result))
