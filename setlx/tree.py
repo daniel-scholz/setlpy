@@ -49,7 +49,11 @@ class Tree():
             self.root = node
             self.total += 1
         else:
-            self.total += self.root.insert(node)
+            try:
+                self.total += self.root.insert(node)
+            except Exception as e:
+                raise Exception(f"node {key} could not be inserted due to >>{e}<<")
+            
 
     def find(self, key):
         return self.root._find(key) if self.root != None else None
@@ -124,7 +128,6 @@ class Tree():
                 return self_node < other_node
             if self.total < other.total:  # which one has more elements
                 return True
-
         return False
 
     def __gt__(self, other):

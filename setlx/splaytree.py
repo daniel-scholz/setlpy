@@ -14,8 +14,9 @@ class SplayTree(Tree):
             node = SplayNode(key)
         else:
             node = key
-        super().insert(node)
-        self.splay(node)
+        result = super().insert(node)
+        if result != 0:
+            self.splay(node)
 
     def find(self, key):
         return self._find(SplayNode(key))

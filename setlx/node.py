@@ -72,9 +72,16 @@ class BinaryNode():
         return str(self)
 
     def __getitem__(self, key):
+        results = []
         for node in self._traverse():
             if isinstance(node.key, list.List) and len(node.key) == 2 and key == node.key[1]:
-                return node
+                results.append(node)
+            if len(results) > 1:
+                return None
+        if len(results) != 1:
+            return None
+        else:
+            return results[0]
         # returns None if Node got no value
 
     def _get_item_by_index(self, index):
@@ -83,13 +90,11 @@ class BinaryNode():
                 return node
 
     def insert(self, node):
-        node_key = _Key(node.key[1]) if isinstance(
-            node.key, list.List) else _Key(node.key)  # make keys comparable
-        self_key = _Key(self.key[1]) if isinstance(
-            self.key, list.List) else _Key(self.key)
-        if isinstance(self.key, list.List) and isinstance(node.key, list.List) and self_key == node_key:
-            self.key[2] = node.key[2]  # indices start at 1
-            return 0
+        node_key =  _Key(node.key)  # make keys comparable
+        self_key =  _Key(self.key)
+        # if isinstance(self.key, list.List) and isinstance(node.key, list.List) and self_key == node_key:
+        #     self.key[2] = node.key[2]  # indices start at 1
+        #     return 0
         if node_key < self_key:
             # same effect as < operator but works for python sets as well
             if self.left != None:
@@ -102,7 +107,7 @@ class BinaryNode():
             self.right = node
             return 1
        
-        return 0
+        raise Exception(f"something went wrong")
 
     def _find(self, key):
         k_key = _Key(key)

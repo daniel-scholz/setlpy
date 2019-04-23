@@ -22,16 +22,12 @@ class Set():
         # elif isinstance(arg, List) and len(arg) == 2:
         #  self.tree = Tree(key=arg[1], value=arg[2])
         else:
-            try:
-                """
-                check if argument for constructor is an iterable like list, set etc.
-                """
-                self.tree = SplayTree()
-                for element in iter(arg):
-                    self.tree.insert(element)
-            except TypeError:
-                raise TypeError(
-                    f"set cannot be created from {type(arg)}")
+            """
+            check if argument for constructor is an iterable like list, set etc.
+            """
+            self.tree = SplayTree()
+            for element in iter(arg):
+                self.tree.insert(element)
 
     def __iter__(self):
         new_set = self._clone()
@@ -56,7 +52,6 @@ class Set():
     def __getitem__(self, index):
         result = self.tree[index]
         if result != None:
-
             return result.key[2]
 
     def __setitem__(self, key, value):
