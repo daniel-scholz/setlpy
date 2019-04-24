@@ -52,8 +52,8 @@ class Tree():
             try:
                 self.total += self.root.insert(node)
             except Exception as e:
-                raise Exception(f"node {key} could not be inserted due to >>{e}<<")
-            
+                raise Exception(
+                    f"node {key} could not be inserted due to >>{e}<<")
 
     def find(self, key):
         return self.root._find(key) if self.root != None else None
@@ -93,12 +93,15 @@ class Tree():
     def __eq__(self, other):
         if other == None:
             return False
-        if self.root != None or other.root != None:
-            return self.root == other.root
-        else:  # elif other == None:
-            if self.root == None and other.root == None:
-                return True
-            return False
+        return self._compare_to(other) == 0
+        # if other == None:
+        #     return False
+        # if self.root != None or other.root != None:
+        #     return self.root == other.root
+        # else:  # elif other == None:
+        #     if self.root == None and other.root == None:
+        #         return True
+        #     return False
 
     def _traverse(self):
         # https://stackoverflow.com/questions/8991840/recursion-using-yield
@@ -141,3 +144,18 @@ class Tree():
         returns self >= other
         """
         return other.__le__(self)
+
+    def _compare_to(self, other):  # 1 => self < other
+        if self.root == None:  # left set is empty
+            return 1
+        if other.root == None:  # and self.root != None:  # right set is empty and left set is not
+            return -1
+        if other.root != None and self.root != None:
+            for self_node, other_node in zip(self, other):
+                if self_node.key == other_node.key:
+                    continue
+                return 1 if self_node < other_node else -1
+            if self.total < other.total:  # which one has more elements
+                return 1
+            return 0
+        return 0

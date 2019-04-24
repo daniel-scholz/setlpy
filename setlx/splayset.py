@@ -169,23 +169,14 @@ class Set():
             _ = other.tree
         except AttributeError:
             return False
-        return self.tree >= other.tree and self.tree <= other.tree
+        return self.tree == other.tree
 
     def __le__(self, other):  # a.k.a. is_subset
-        """
-        corresponds to self <= other
-        implements check for subset, NOT real less or equal
-        other is subset of self; all elements of self are in other
-        """
         if other != None and self != None:  # and other.tree != None and self.tree != None:
             return self.tree <= other.tree
         return False
 
     def __lt__(self, other):
-        """
-        implements check for real subset, NOT real less
-        """
-
         if self.tree == None:
             return True
         if other == None or other.tree == None:
