@@ -1,6 +1,7 @@
+import copy
 import random
 from types import GeneratorType
-import copy
+
 from setlx.list import List
 from setlx.splaytree import SplayTree
 from setlx.tree import Tree
