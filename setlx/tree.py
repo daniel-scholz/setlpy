@@ -17,8 +17,9 @@ class Tree:
         """
         returns the iterator object
         """
-        self.index = 0
-        return self
+        new_tree = self._clone()
+        new_tree.index = 0
+        return new_tree
 
     def __next__(self):
         if self.index < self.total:
