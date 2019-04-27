@@ -607,7 +607,11 @@ def rational(*args):
 
 
 def read(text):
-    return input(text)
+    text = input(text)
+    try:
+        return int(text)
+    except:
+        return text
 
 
 def readFile(file):

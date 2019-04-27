@@ -6,15 +6,20 @@ from copy import deepcopy as _deepcopy
 class cached_procedure:
     def __init__(self, func):
         self.decorator = _lru_cache(maxsize=None, typed=False)(func)
-    
-    def __call__(self, *args, **kwargs):
-        return self.decorator(*args,**kwargs)
 
-def to_method(instance, func, static = False):
-    def decorator(*args,**kwargs):
-        if static:
-            kwargs["self"]=instance
+    def __call__(self, *args, **kwargs):
+        return self.decorator(*args, **kwargs)
+
+
+class to_method:
+    def __init__(self, instance, func, static=False):
+        self.instance = instance
+        self.func = func
+        self.static = static
+
+    def __call__(self, *args, **kwargs):
+        if self.static:
+            kwargs["self"] = self.instance
         else:
-            args = (instance,*args)
-        return func(*args,**kwargs)
-    return decorator
+            args = (self.instance, *args)
+        return self.func(*args, **kwargs)
