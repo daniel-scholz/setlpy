@@ -1,6 +1,6 @@
 import random
 from types import GeneratorType
-import copy 
+import copy
 from setlx.list import List
 from setlx.splaytree import SplayTree
 from setlx.tree import Tree
@@ -229,3 +229,12 @@ class Set:
 
     def _is_empty(self):
         return self.tree.total == 0
+
+    def __hash__(self):
+        size = self.tree.total
+        _hash = size
+        if size >= 1:
+            _hash = size * 31 + hash(self.first())
+            if size >= 2:
+                _hash = _hash*31 + hash(self.last())
+        return _hash
