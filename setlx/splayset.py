@@ -9,7 +9,7 @@ from setlx.tree import Tree
 class Set:
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
     def __init__(self, arg=None):
-        if isinstance(arg, Tree):  # used for cloning the set
+        if isinstance(arg, Tree):  #[] used for cloning the set
             self.tree = arg
         elif arg is None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
             self.tree = SplayTree(arg)
@@ -52,10 +52,7 @@ class Set:
             return copy.deepcopy(result.key[2])
 
     def __setitem__(self, key, value):
-        for item in self:
-            if isinstance(item, List) and len(item) == 2 and item[1] == key:
-                self.delete(item)
-
+        
         self.tree[key] = value
 
     def _clone(self):
@@ -218,13 +215,19 @@ class Set:
         return self.tree.root._get_item_by_index(random.randint(0, len(self) - 1)).key
 
     def __domain__(self):
-        return Set(k[0] for k in self)
+        if not self.tree.is_map:
+            raise Exception(f"{self} is not a map")
+            
+        return Set(k[1] for k in self)
 
     def __range__(self):
+        if not self.tree.is_map:
+            raise Exception(f"{self} is not a map")
+
+
         new_set = Set()
         for s in self:
-            if isinstance(s, tuple) and len(s) == 2:
-                new_set += s[1]
+           new_set += s[2]
         return new_set
 
     def _is_empty(self):
