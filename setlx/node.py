@@ -106,6 +106,7 @@ class BinaryNode():
                 return self.right.insert(node)
             self.right = node
             return 1
+        return 0
 
     def _find(self, key):
         k_key = _Key(key)
