@@ -90,8 +90,8 @@ class BinaryNode():
                 return node
 
     def insert(self, node):
-        node_key =  _Key(node.key)  # make keys comparable
-        self_key =  _Key(self.key)
+        node_key = _Key(node.key)  # make keys comparable
+        self_key = _Key(self.key)
         # if isinstance(self.key, list.List) and isinstance(node.key, list.List) and self_key == node_key:
         #     self.key[2] = node.key[2]  # indices start at 1
         #     return 0
@@ -106,8 +106,6 @@ class BinaryNode():
                 return self.right.insert(node)
             self.right = node
             return 1
-       
-        raise Exception(f"something went wrong")
 
     def _find(self, key):
         k_key = _Key(key)
@@ -129,7 +127,7 @@ class BinaryNode():
         k_key = _Key(key)
         parent_key = _Key(parent.key)
 
-        if parent.left != None and k_key < parent_key:
+        if parent.left is not None and k_key < parent_key:
             to_delete = parent.left
             if _Key(to_delete.key) == k_key:
                 if to_delete.right == None:
@@ -146,7 +144,7 @@ class BinaryNode():
                     # current.key = parent.del_min()
             else:
                 to_delete.delete(key)
-        elif parent.right and k_key > parent_key:
+        elif parent.right is not None and k_key > parent_key:
             to_delete = parent.right
             if _Key(to_delete.key) == _Key(key):
                 if to_delete.right == None:

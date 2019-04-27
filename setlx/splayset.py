@@ -1,20 +1,17 @@
-from setlx.splaynode import SplayNode
+import random
+from types import GeneratorType
+import copy 
+from setlx.list import List
 from setlx.splaytree import SplayTree
 from setlx.tree import Tree
-from setlx.list import List
-
-import copy
-from types import GeneratorType
-import itertools
-import random
 
 
-class Set():
+class Set:
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
     def __init__(self, arg=None):
         if isinstance(arg, Tree):  # used for cloning the set
             self.tree = arg
-        elif arg == None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
+        elif arg is None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
             self.tree = SplayTree(arg)
 
         # map feature is implemented in tree class
@@ -52,9 +49,13 @@ class Set():
     def __getitem__(self, index):
         result = self.tree[index]
         if result != None:
-            return result.key[2]
+            return copy.deepcopy(result.key[2])
 
     def __setitem__(self, key, value):
+        for item in self:
+            if isinstance(item, List) and len(item) == 2 and item[1] == key:
+                self.delete(item)
+
         self.tree[key] = value
 
     def _clone(self):
@@ -82,7 +83,7 @@ class Set():
         return self.tree.root._get_item_by_index(0).key
 
     def last(self):
-        return self.tree.root._get_item_by_index(len(self)-1).key
+        return self.tree.root._get_item_by_index(len(self) - 1).key
 
     def __str__(self):
         return "{" + ", ".join(("'" + str(i) + "'") if type(i) == str else str(i) for i in self) + "}"
@@ -126,7 +127,7 @@ class Set():
 
     # matrix multiplication; "@" operator
     # def __matmul__(self, other):
-        # pass
+    # pass
 
     def __mod__(self, other):
         # “%” computes the symmetric difference of two sets.
@@ -137,6 +138,7 @@ class Set():
     def __pow__(self, other, modulo=None):
         # ** operator
         if other == 2:
+            # cartesian product
             new_set = Set()
             for s1 in self:
                 for s2 in self:
@@ -172,7 +174,8 @@ class Set():
         return self.tree == other.tree
 
     def __le__(self, other):  # a.k.a. is_subset
-        if other != None and self != None:  # and other.tree != None and self.tree != None:
+        # and other.tree != None and self.tree != None:
+        if other != None and self != None:
             return self.tree <= other.tree
         return False
 
@@ -196,6 +199,7 @@ class Set():
         returns self >= other
         """
         return other <= self
+
     # extracts key from nnode
 
     def find(self, key):
@@ -211,7 +215,7 @@ class Set():
         self.tree = SplayTree()
 
     def __rnd__(self):
-        return self.tree.root._get_item_by_index(random.randint(0, len(self)-1)).key
+        return self.tree.root._get_item_by_index(random.randint(0, len(self) - 1)).key
 
     def __domain__(self):
         return Set(k[0] for k in self)

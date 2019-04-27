@@ -1,6 +1,5 @@
-from .tree import Tree
-from .node import BinaryNode
 from .splaynode import SplayNode
+from .tree import Tree
 
 
 class SplayTree(Tree):
@@ -28,18 +27,14 @@ class SplayTree(Tree):
             self.splay(node)
         return result
 
-    def _clone(self):
-        new_tree = SplayTree()
-        new_tree.root = self.root
-        new_tree.total = self.total
-        return new_tree
     #####################################################################
-    #   ZIG: rechts
-    #   ZAG: links
+    #   ZIG: right
+    #   ZAG: left
     #####################################################################
 
     def splay(self, node):
-        if self.root != None and node != self.root.key:
+        if self.root is not None and node != self.root.key:
+
             while self.root.key != node.key:
                 self.root.splay(node)
 

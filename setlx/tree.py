@@ -2,7 +2,7 @@ from setlx.node import BinaryNode
 from setlx.list import List
 
 
-class Tree():
+class Tree:
     def __init__(self, key=None):
         self.root = None
         self.total = 0
@@ -10,7 +10,8 @@ class Tree():
 
         if key != None:
             self.insert(key)  # ensures that total count is correct
-    """Technically speaking, Python iterator object must implement two special methods, __iter__() and __next__(), collectively called the iterator protocol.(https://www.programiz.com/python-programming/iterator)"""
+    """Technically speaking, Python iterator object must implement two special methods, __iter__() and __next__(), 
+    collectively called the iterator protocol.(https://www.programiz.com/python-programming/iterator) """
 
     def __iter__(self):
         """
