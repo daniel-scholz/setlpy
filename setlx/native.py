@@ -242,9 +242,8 @@ def fromE(value):
         raise Exception(f"Argument '{value}' is not a collection value.")
 
 
-def get(message=None):
+def get(message=""):
     return input(message)
-    # raise NotImplementedError('get is not implemented yet')
 
 
 def getOsID():

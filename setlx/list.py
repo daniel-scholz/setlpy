@@ -42,3 +42,6 @@ class List(list):
     def __mul__(self,other):
         result = super().__mul__(other)
         return List(deepcopy(result))
+
+    def __hash__(self):
+        return hash(str(self))
