@@ -1,4 +1,4 @@
-from .set_functions import cartesian_product, sum, product, map, _range
+from .set_functions import cartesian_product, sum, product, _range
 from .decorators import cached_procedure, to_method
 from .errors import unpack_error, UserException, BacktrackException
 from .math import factorial, acos, asin, atan, cbrt, ceil, cos, cosh, exp, expm1, floor, log, log10, log1p, rint, signum, sin, sinh, sqrt, tan, tanh, ulp

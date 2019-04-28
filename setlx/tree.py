@@ -7,7 +7,7 @@ class Tree:
         self.root = None
         self.total = 0
         self.index = 0
-
+        self.is_map = False
         if key != None:
             self.insert(key)  # ensures that total count is correct
     """Technically speaking, Python iterator object must implement two special methods, __iter__() and __next__(), 
@@ -32,9 +32,17 @@ class Tree:
     """ functions to implement map feature"""
 
     def __getitem__(self, key):
+        if not self.is_map:
+            return None
         return self.root[key]
 
     def __setitem__(self, key, value):
+        if not self.is_map:
+            return
+        for item in self:
+            if item != None and item.key[1] == key:
+                self.delete(item.key)
+
         self.insert(List([key, value]))
     """"""
 
@@ -45,8 +53,14 @@ class Tree:
         return new_tree
 
     def insert(self, key):
+
         node = BinaryNode(key) if not isinstance(
             key, BinaryNode) else key  # checks if insert is called from splaynode class
+        if isinstance(node.key, list) and len(node.key) == 2:
+            self.is_map = True
+        else:
+            # flag needs to be set on false when non map element is inserted
+            self.is_map = False
         if self.root == None:
             self.root = node
             self.total += 1
