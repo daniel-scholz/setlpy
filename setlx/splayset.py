@@ -29,7 +29,7 @@ class Set:
 
     def __iter__(self):
         new_set = self._clone()
-        new_set.tree.current = self.first()
+        new_set.tree.current = self.tree.root.min() if self.tree.root != None else None
         # minimum of the tree
         # self.tree.current_node = self.tree[0] if self.tree.total > 0 else None
         return new_set
