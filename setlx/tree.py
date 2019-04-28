@@ -27,7 +27,7 @@ class Tree:
     def __next__(self):
         if self.current == None:
             raise StopIteration
-            
+
         old_node = self.current
 
         if self.current.right is not None:
@@ -121,7 +121,6 @@ class Tree:
             else:
                 tree.root.delete(key)
             self.total -= 1
-
         else:
             raise ValueError(f"tree is empty")
 

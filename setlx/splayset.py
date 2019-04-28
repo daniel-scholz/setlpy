@@ -105,18 +105,12 @@ class Set:
         return new_set
 
     def __sub__(self, other):
-        # remove from self
-        new_set = self._clone()  # TODO: deepcopy?
-        if not isinstance(other, (Set, Tree)):
-            new_set.tree.delete(other)
-        else:
-            for o in other:
-                if o in self:
-                    try:
-                        new_set.delete(o)
-                    except (ValueError):
-                        raise TypeError(
-                            f"could not delete {o} from set")
+       # removes elements of two sets
+        if not isinstance(other, (list, Set)):
+            raise TypeError("only sets can be removed from sets")
+        new_set = self._clone()
+        for element in other:
+            new_set.delete(element)
         return new_set
 
     def __mul__(self, other):
@@ -137,7 +131,7 @@ class Set:
         s2 = (other - self)
         return s1 + s2
 
-    def __pow__(self, other, modulo=None):
+    def __pow__(self, other):
         # ** operator
         if other == 2:
             # cartesian product
