@@ -84,10 +84,10 @@ class BinaryNode():
             return results[0]
         # returns None if Node got no value
 
-    def _get_item_by_index(self, index):
-        for i, node in enumerate(self._traverse()):
-            if i == index:
-                return node
+    # def _get_item_by_index(self, index):
+    #     for i, node in enumerate(self._traverse()):
+    #         if i == index:
+    #             return node
 
     def insert(self, node):
         node_key = _Key(node.key)  # make keys comparable
@@ -100,13 +100,13 @@ class BinaryNode():
             if self.left != None:
                 return self.left.insert(node)
             self.left = node
-            return 1
+            return self, 1
         if node_key != self_key:
             if self.right != None:
                 return self.right.insert(node)
             self.right = node
-            return 1
-        return 0
+            return self, 1
+        return self, 0
 
     def _find(self, key):
         k_key = _Key(key)
@@ -185,6 +185,13 @@ class BinaryNode():
             return self
         else:
             return self.left.min()
+
+    def max(self):
+        """ returns node with min key"""
+        if self.right == None:
+            return self
+        else:
+            return self.right.max()
 
     def __eq__(self, other):
         o_none, s_none = False, False

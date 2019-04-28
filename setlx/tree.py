@@ -1,13 +1,16 @@
 from setlx.node import BinaryNode
 from setlx.list import List
 
+import copy
+
 
 class Tree:
     def __init__(self, key=None):
         self.root = None
         self.total = 0
-        self.index = 0
         self.is_map = False
+        self.parents = {}
+        self.current = None
         if key != None:
             self.insert(key)  # ensures that total count is correct
     """Technically speaking, Python iterator object must implement two special methods, __iter__() and __next__(), 
@@ -18,16 +21,35 @@ class Tree:
         returns the iterator object
         """
         new_tree = self._clone()
-        new_tree.index = 0
+        new_tree.current = self.root.min()
         return new_tree
 
     def __next__(self):
-        if self.index < self.total:
-            old_i = self.index
-            self.index += 1
-            return self.root._get_item_by_index(old_i)
-        else:
+        if self.current == None:
             raise StopIteration
+            
+        old_node = self.current
+
+        if self.current.right is not None:
+            self.current = self.current.right.min()
+        elif self.parents[str(self.current.key)] is None:
+            self.current = None
+
+            return old_node
+        elif self.current < self.parents[str(self.current.key)]:
+            self.current = self.parents[str(self.current.key)]
+        else:  # self.current > parent => current is rechtes kind
+            node = self.parents[str(self.current.key)]
+            if node == None:
+                self.current = None
+                return old_node
+            while node < self.current:
+                node = self.parents[str(node.key)]
+                if node == None:
+                    self.current = None
+                    return old_node
+            self.current = self.parents[str(node.key)]
+        return old_node
 
     """ functions to implement map feature"""
 
@@ -47,10 +69,11 @@ class Tree:
     """"""
 
     def _clone(self):
-        new_tree = Tree()
-        new_tree.root = self.root
-        new_tree.total = self.total
-        return new_tree
+        return copy.deepcopy(self)
+        # new_tree = Tree()
+        # new_tree.root = self.root
+        # new_tree.total = self.total
+        # return new_tree
 
     def insert(self, key):
 
@@ -64,9 +87,13 @@ class Tree:
         if self.root == None:
             self.root = node
             self.total += 1
+            self.parents[str(node.key)] = None
+
         else:
             try:
-                self.total += self.root.insert(node)
+                parent, result = self.root.insert(node)
+                self.total += result
+                self.parents[str(node.key)] = copy.deepcopy(parent)
             except Exception as e:
                 raise Exception(
                     f"node {key} could not be inserted due to >>{e}<<")

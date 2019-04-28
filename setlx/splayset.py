@@ -10,7 +10,7 @@ from setlx.tree import Tree
 class Set:
     # https://stackoverflow.com/questions/19151/build-a-basic-python-iterator
     def __init__(self, arg=None):
-        if isinstance(arg, Tree):  #[] used for cloning the set
+        if isinstance(arg, Tree):  # [] used for cloning the set
             self.tree = arg
         elif arg is None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
             self.tree = SplayTree(arg)
@@ -29,7 +29,7 @@ class Set:
 
     def __iter__(self):
         new_set = self._clone()
-        new_set.tree.index = 0
+        new_set.tree.current = self.first()
         # minimum of the tree
         # self.tree.current_node = self.tree[0] if self.tree.total > 0 else None
         return new_set
@@ -53,7 +53,7 @@ class Set:
             return copy.deepcopy(result.key[2])
 
     def __setitem__(self, key, value):
-        
+
         self.tree[key] = value
 
     def _clone(self):
@@ -78,10 +78,14 @@ class Set:
         return result
 
     def first(self):
-        return self.tree.root._get_item_by_index(0).key
+        if self.tree.root == None:
+            return None
+        return self.tree.root.min().key
 
     def last(self):
-        return self.tree.root._get_item_by_index(len(self) - 1).key
+        if self.tree.root == None:
+            return None
+        return self.tree.root.max().key
 
     def __str__(self):
         return "{" + ", ".join(("'" + str(i) + "'") if type(i) == str else str(i) for i in self) + "}"
@@ -213,22 +217,21 @@ class Set:
         self.tree = SplayTree()
 
     def __rnd__(self):
-        return self.tree.root._get_item_by_index(random.randint(0, len(self) - 1)).key
+        return self.__arb__()
 
     def __domain__(self):
         if not self.tree.is_map:
             raise Exception(f"{self} is not a map")
-            
+
         return Set(k[1] for k in self)
 
     def __range__(self):
         if not self.tree.is_map:
             raise Exception(f"{self} is not a map")
 
-
         new_set = Set()
         for s in self:
-           new_set += s[2]
+            new_set += s[2]
         return new_set
 
     def _is_empty(self):
