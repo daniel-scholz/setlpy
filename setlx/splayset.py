@@ -211,7 +211,10 @@ class Set:
         self.tree = SplayTree()
 
     def __rnd__(self):
-        return self.__arb__()
+        rand_i = random.randint(0, len(self) - 1)
+        for i, element in enumerate(self):
+            if i == rand_i:
+                return element
 
     def __domain__(self):
         if not self.tree.is_map:
