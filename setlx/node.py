@@ -74,7 +74,7 @@ class BinaryNode():
     def __getitem__(self, key):
         results = []
         for node in self._traverse():
-            if isinstance(node.key, list.List) and len(node.key) == 2 and key == node.key[1]:
+            if  key == node.key[1]:
                 results.append(node)
             if len(results) > 1:
                 return None

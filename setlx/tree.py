@@ -21,35 +21,13 @@ class Tree:
         returns the iterator object
         """
         new_tree = self._clone()
+        new_tree.iterator = self._traverse()
         new_tree.current = self.root.min()
         return new_tree
 
     def __next__(self):
-        if self.current == None:
-            raise StopIteration
-
-        old_node = self.current
-
-        if self.current.right is not None:
-            self.current = self.current.right.min()
-        elif self.parents[str(self.current.key)] is None:
-            self.current = None
-
-            return old_node
-        elif self.current < self.parents[str(self.current.key)]:
-            self.current = self.parents[str(self.current.key)]
-        else:  # self.current > parent => current is rechtes kind
-            node = self.parents[str(self.current.key)]
-            if node == None:
-                self.current = None
-                return old_node
-            while node < self.current:
-                node = self.parents[str(node.key)]
-                if node == None:
-                    self.current = None
-                    return old_node
-            self.current = self.parents[str(node.key)]
-        return old_node
+        element = self.iterator.__next__()
+        return element
 
     """ functions to implement map feature"""
 
@@ -121,8 +99,7 @@ class Tree:
             else:
                 tree.root.delete(key)
             self.total -= 1
-        else:
-            raise ValueError(f"tree is empty")
+        
 
     def __str__(self):
         if self.root != None:
@@ -148,6 +125,8 @@ class Tree:
     def _traverse(self):
         # https://stackoverflow.com/questions/8991840/recursion-using-yield
         # yield self.root
+        if self.root == None:
+            return None
         yield from self.root._traverse()
 
     def __le__(self, other):  # a.k.a. is_subset
