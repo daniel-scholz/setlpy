@@ -16,5 +16,11 @@ for i in range(1, n):
 
 print(s1)
 print(s1[3])
+s2 = Set(s1)
 s1[3] = 100
+print(s1 + s2)
+for s in s1:
+    print(s)
 print(s1)
+print(s2)
+print(s1**2)

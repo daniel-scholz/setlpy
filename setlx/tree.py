@@ -60,7 +60,7 @@ class Tree:
 
     def _clone(self):
         """:returns a copy of the current tree."""
-        return copy.copy(self)
+        return copy.deepcopy(self)
 
     def insert(self, key):
         """Inserts new node into tree while incrementing the total count, to keep track of the total elements in the tree.

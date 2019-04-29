@@ -19,7 +19,9 @@ class Set:
 
         :param arg: A single item or a list of items which will be inserted into the set.
         """
-        if arg is None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
+        if isinstance(arg, Set):
+            self.tree = arg.tree._clone()
+        elif arg is None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
             """
                 If the argument only contains a single element, the tree is initialized with it.
                 This is also possible for an empty set, when the arg is equal to None. This is the default parameter.
@@ -86,7 +88,7 @@ class Set:
     def _clone(self):
         """:returns a copy of the current set."""
         new_set = Set()
-        new_set.tree = self.tree
+        new_set.tree = self.tree._clone()
         return new_set
 
     def __len__(self):
