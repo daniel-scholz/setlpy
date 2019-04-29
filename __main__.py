@@ -23,4 +23,3 @@ for s in s1:
     print(s)
 print(s1)
 print(s2)
-print(s1**2)

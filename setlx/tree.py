@@ -83,12 +83,12 @@ class Tree:
             self.total += 1
 
         else:
-            try:
-                result = self.root.insert(node)
-                self.total += result
-            except Exception as e:
-                raise Exception(
-                    f"node {key} could not be inserted due to >>{e}<<")
+            # try:
+            result = self.root.insert(node)
+            self.total += result
+        # except Exception as e:
+        #  raise Exception(
+        #     f"node {key} could not be inserted due to >>{e}<<")
 
     def find(self, key):
         """:returns key when key was found and tree is not empty else None is returned."""
