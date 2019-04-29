@@ -13,9 +13,9 @@ class _Key:
             self.key = key
 
     def __eq__(self, other):
-        if not isinstance(other, _Key):
-            other = _Key(other)
-        return self.key == other.key
+        if not isinstance(other, type(other.key)):
+            return self.key == other.key
+        return str(type(self.key)) == str(type(other.key))
 
     def __le__(self, other):
         if isinstance(self.key, type(other.key)):
@@ -23,8 +23,8 @@ class _Key:
         return str(type(self.key)) < str(type(other.key)) or str(type(self.key)) == str(type(other.key))
 
     def __lt__(self, other):
-        if not isinstance(other, _Key):
-            other = _Key(other)
+        if not isinstance(other, type(other.key)):
+            return self.key < other.key
         return str(type(self.key)) < str(type(other.key))
 
     def __gt__(self, other):
