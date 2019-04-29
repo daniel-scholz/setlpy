@@ -1,11 +1,18 @@
-import setlx
-from setlx.splayset import Set
+from setlx.set import Set
+from setlx.node import Node
+
+n = Node(2)
+n.left = Node(1)
+print(n)
 
 s1 = Set()
+s2 = Set()
 j = 10
-n = 100
-for i in range(1, n):
-    # bug in squaring the
-    s1.insert(setlx.List([(10 - i), j]))
+n = 1000
 
-print(s1)
+for i in range(1, n):
+    s1.insert(i)
+    s2.insert(i + 1)
+
+print(s1, s2, sep="\n")
+print(s1 <= s2)
