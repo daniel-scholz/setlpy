@@ -3,14 +3,6 @@ from numbers import Number
 from copy import deepcopy
 
 
-def to_bool(value):
-    """
-    converts any value to a boolean
-    TODO: check how setlx converts values to booleans
-    """
-    return bool(value)
-
-
 def cartesian(v1, v2):
     type_v1 = type(v1)
     type_v2 = type(v2)
@@ -28,9 +20,6 @@ def cartesian(v1, v2):
 
 
 def iterate(**iterables):
-    """
-    TODO: maybe own implementation?
-    """
     return product(iterables)
 
 

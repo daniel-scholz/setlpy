@@ -1,3 +1,8 @@
+""" SetlX's native math functions implemented in python. 
+
+Most of them are just wrappers around functions of the python math package. 
+"""
+
 import math
 
 
@@ -85,4 +90,4 @@ def tanh(value):
 
 
 def ulp(value):
-    raise NotImplementedError("ulp is not implemented")
+    raise NotImplementedError("ulp is not supported")

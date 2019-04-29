@@ -2,6 +2,7 @@ from copy import deepcopy
 
 
 class List(list):
+    """ A list that starts with index one instead of zero"""
     def __getitem__(self, index):
         if isinstance(index, slice):
             if index.start == 0:
