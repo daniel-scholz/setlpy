@@ -1,9 +1,11 @@
-from .node import BinaryNode, _Key
+import copy
+
+from .node import Node, _Key
 
 
-class SplayNode(BinaryNode):
+class SplayNode(Node):
     def __init__(self, key, left=None, right=None):
-        if isinstance(key, BinaryNode):
+        if isinstance(key, Node):
             right = key.right
             left = key.left
             key = key.key
@@ -51,7 +53,7 @@ class SplayNode(BinaryNode):
     def _zag_rot(self, node):  # links rotation mit knoten RECHTS unter der wurzel
         old_left = node.left  # save node's left sub tree
 
-        node.left = SplayNode(self)
+        node.left = copy.deepcopy(self)
         node.left.right = old_left  # old_root
         self.key = node.key
         self.left = node.left

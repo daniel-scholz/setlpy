@@ -22,7 +22,7 @@ from collections import Counter
 from .vector import Vector
 from .matrix import Matrix
 from .utils import is_number, is_integer
-from .splayset import Set
+from .set import Set
 from .errors import UserException
 from .list import List
 
@@ -582,7 +582,7 @@ def permutations(iterable):
 def pow(s):
     if not isinstance(s, Set):
         raise TypeError(f"{s} is not of type Set")
-    return s.powerset()
+    return s.power_set()
 
 
 def print(*args):

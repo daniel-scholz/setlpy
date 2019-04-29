@@ -1,35 +1,46 @@
-from setlx.node import BinaryNode
+import copy
+
 from setlx.list import List
+from setlx.node import Node
 
 
 class Tree:
+    """
+    This class provides the internal data structure in the form of ordered binary trees for the sets of the
+    setlx-Module.
+    """
+
     def __init__(self, key=None):
+        """Constructor of this class. Initializes the root of the tree, the total amount of nodes in the tree and if it
+        is used as map.
+
+        Afterwards the the key is inserted by calling the insert function in order to ensure that the total count is
+        correct.
+
+        :param key: The tree is initialized with these element(s).
+        """
         self.root = None
         self.total = 0
-        self.index = 0
         self.is_map = False
-        if key != None:
+        if key is not None:
             self.insert(key)  # ensures that total count is correct
-    """Technically speaking, Python iterator object must implement two special methods, __iter__() and __next__(), 
-    collectively called the iterator protocol.(https://www.programiz.com/python-programming/iterator) """
 
     def __iter__(self):
+        """The iterator attribute is initialized. It stores a generator object which yields a Node every time the next
+        function is called on it.
+
+        :returns A clone of the current tree to enable nested iterations over the same object.
         """
-        returns the iterator object
-        """
+
         new_tree = self._clone()
-        new_tree.index = 0
+        new_tree.iterator = self.traverse()
         return new_tree
 
     def __next__(self):
-        if self.index < self.total:
-            old_i = self.index
-            self.index += 1
-            return self.root._get_item_by_index(old_i)
-        else:
-            raise StopIteration
+        """Returns the next element in the tree by yielding the next element from the iterator."""
+        return self.iterator.__next__()
 
-    """ functions to implement map feature"""
+    """  The following two functions are implemented to provide the map feature"""
 
     def __getitem__(self, key):
         if not self.is_map:
@@ -40,53 +51,67 @@ class Tree:
         if not self.is_map:
             return
         for item in self:
-            if item != None and item.key[1] == key:
+            if item is not None and item.key[1] == key:
                 self.delete(item.key)
 
         self.insert(List([key, value]))
+
     """"""
 
     def _clone(self):
-        new_tree = Tree()
-        new_tree.root = self.root
-        new_tree.total = self.total
-        return new_tree
+        """:returns a copy of the current tree."""
+        return copy.deepcopy(self)
 
     def insert(self, key):
+        """Inserts new node into tree while incrementing the total count, to keep track of the total elements in the tree.
 
-        node = BinaryNode(key) if not isinstance(
-            key, BinaryNode) else key  # checks if insert is called from splaynode class
+        :param key: The key to be inserted.
+        :return: None. But the counter variable self.total is incremented.
+        """
+        node = Node(key) if not isinstance(
+            key, Node) else key  # checks if insert is called from splaynode class
         if isinstance(node.key, list) and len(node.key) == 2:
+            # flag needs to be set to True when map element is inserted
+
             self.is_map = True
         else:
-            # flag needs to be set on false when non map element is inserted
+            # flag needs to be set to False when non map element is inserted
             self.is_map = False
-        if self.root == None:
+        if self.root is None:
+            # Inserted element becomes root
             self.root = node
             self.total += 1
+
         else:
-            try:
-                self.total += self.root.insert(node)
-            except Exception as e:
-                raise Exception(
-                    f"node {key} could not be inserted due to >>{e}<<")
+            # try:
+            result = self.root.insert(node)
+            self.total += result
+        # except Exception as e:
+        #  raise Exception(
+        #     f"node {key} could not be inserted due to >>{e}<<")
 
     def find(self, key):
-        return self.root._find(key) if self.root != None else None
+        """:returns key when key was found and tree is not empty else None is returned."""
+        return self.root.find(key) if self.root is not None else None
 
     def delete(self, key):
+        """Deletes key from tree, updates self.total and restores order of tree.
+
+        :param key: that is deleted
+        :return: None
+        """
         tree = self
-        if tree.root != None:
+        if tree.root is not None:
             root = tree.root
             if root.key == key:
-                # check if right subtree i  s minimum
-                if root.right == None:
+                # check if right subtree is minimum
+                if root.right is None:
                     tree.root = root.left
-                elif root.left == None:
+                elif root.left is None:
                     tree.root = root.right
                 else:
                     root_right = root.right
-                    if root_right.left == None:
+                    if root_right.left is None:
                         root.right = root_right.right
                         root.key = root_right.key
                     else:
@@ -95,83 +120,64 @@ class Tree:
                 tree.root.delete(key)
             self.total -= 1
 
-        else:
-            raise ValueError(f"tree is empty")
-
     def __str__(self):
-        if self.root != None:
+        """:returns external string representation."""
+        if self.root is not None:
             return str(self.root)
         return "[]"
 
     def __repr__(self):
+        """:returns internal string representation"""
         return str(self)
 
     def __eq__(self, other):
-        if other == None:
+        """:returns if to trees are equal."""
+        if other is None:
             return False
         return self._compare_to(other) == 0
-        # if other == None:
-        #     return False
-        # if self.root != None or other.root != None:
-        #     return self.root == other.root
-        # else:  # elif other == None:
-        #     if self.root == None and other.root == None:
-        #         return True
-        #     return False
 
-    def _traverse(self):
-        # https://stackoverflow.com/questions/8991840/recursion-using-yield
-        # yield self.root
-        yield from self.root._traverse()
+    def traverse(self):
+        """starts traversing the tree from the root downwards. """
+        if self.root is None:
+            return None
+        yield from self.root.traverse()
 
     def __le__(self, other):  # a.k.a. is_subset
-        """
-        corresponds to self <= other
-        implements check for subset, NOT real less or equal
-        other is subset of self; all elements of self are in other
-        """
+        """:returns if the sets are equal or self < other"""
         return self.__eq__(other) or self.__lt__(other)
 
     def __lt__(self, other):
-        """
-        implements check for real subset, NOT real less
-        """
-        if self.root == None:  # left set is empty
-            return True
-        if other.root == None:  # and self.root != None:  # right set is empty and left set is not
-            return False
-        if other.root != None and self.root != None:
-            for self_node, other_node in zip(self, other):
-                if self_node == other_node:
-                    continue
-                return self_node < other_node
-            if self.total < other.total:  # which one has more elements
-                return True
-        return False
+        """:returns if the elements of the set are lexicographically smaller than the one in other"""
+        return self._compare_to(other) == 1
 
     def __gt__(self, other):
-        """
-        returns self > other
-        """
+        """:returns self > other """
         return other.__lt__(self)
 
     def __ge__(self, other):
-        """
-        returns self >= other
+        """:returns self >= other
         """
         return other.__le__(self)
 
-    def _compare_to(self, other):  # 1 => self < other
-        if self.root == None:  # left set is empty
+    def _compare_to(self, other):
+        """Compares two sets lexicographically. the i-th element of each set is compared. Once the two elements differ
+        the outcome is determined by which of the two elements is greater.
+
+        :param other: The other tree (set) which should be compared to self.
+        :return: 1 if self < other, 0 self == other, -1 self > other
+        """
+        if self.root is None:  # left set is empty
             return 1
-        if other.root == None:  # and self.root != None:  # right set is empty and left set is not
+        if other.root is None:  # right set is empty and left set is not
             return -1
-        if other.root != None and self.root != None:
+        if other.root is not None and self.root is not None:
             for self_node, other_node in zip(self, other):
                 if self_node.key == other_node.key:
                     continue
                 return 1 if self_node < other_node else -1
             if self.total < other.total:  # which one has more elements
                 return 1
+            elif self.total > other.total:
+                return -1
             return 0
         return 0

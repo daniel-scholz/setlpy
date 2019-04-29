@@ -13,8 +13,9 @@ class SplayTree(Tree):
             node = SplayNode(key)
         else:
             node = key
-        result = super().insert(node)
-        if result != 0:
+        old_total = self.total
+        super().insert(node)
+        if old_total < self.total:
             self.splay(node)
 
     def find(self, key):
@@ -23,7 +24,7 @@ class SplayTree(Tree):
     def _find(self, node):
         # requires node as parameter in order to splay it afterwards
         result = super().find(node.key)
-        if result != None:
+        if result is not None:
             self.splay(node)
         return result
 
@@ -33,7 +34,7 @@ class SplayTree(Tree):
     #####################################################################
 
     def splay(self, node):
-        if self.root is not None and node != self.root.key:
+        if self.root is not None and node.key != self.root.key:
 
             while self.root.key != node.key:
                 self.root.splay(node)
