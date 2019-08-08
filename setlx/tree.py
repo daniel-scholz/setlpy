@@ -51,8 +51,8 @@ class Tree:
         if not self.is_map:
             return
         for item in self:
-            if item is not None and item.key[1] == key:
-                self.delete(item.key)
+           if item is not None and item.key[1] == key:
+               self.delete(item.key)
 
         self.insert(List([key, value]))
 
@@ -72,7 +72,6 @@ class Tree:
             key, Node) else key  # checks if insert is called from splaynode class
         if isinstance(node.key, list) and len(node.key) == 2:
             # flag needs to be set to True when map element is inserted
-
             self.is_map = True
         else:
             # flag needs to be set to False when non map element is inserted
@@ -84,7 +83,9 @@ class Tree:
 
         else:
             # try:
+            # result = self.root.insert(node, handle_map=self.is_map)
             result = self.root.insert(node)
+
             self.total += result
         # except Exception as e:
         #  raise Exception(
@@ -166,10 +167,13 @@ class Tree:
         :param other: The other tree (set) which should be compared to self.
         :return: 1 if self < other, 0 self == other, -1 self > other
         """
+        if self.root is None and other.root is None:
+            return 0
         if self.root is None:  # left set is empty
             return 1
         if other.root is None:  # right set is empty and left set is not
-            return -1
+            return - 1
+            
         if other.root is not None and self.root is not None:
             for self_node, other_node in zip(self, other):
                 if self_node.key == other_node.key:
