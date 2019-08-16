@@ -3,7 +3,8 @@ import random
 from types import GeneratorType
 
 from setlx.list import List
-from setlx.splaytree import SplayTree
+from setlx.tree import Tree
+from setlx.node import NotAMapError
 
 
 class Set:
@@ -19,28 +20,26 @@ class Set:
 
         :param arg: A single item or a list of items which will be inserted into the set.
         """
-        if isinstance(arg, Set):
-            self.tree = arg.tree._clone()
-        elif arg is None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
+        if arg is None or not isinstance(arg, (set, GeneratorType, tuple, list, range)):
             """
                 If the argument only contains a single element, the tree is initialized with it.
                 This is also possible for an empty set, when the arg is equal to None. This is the default parameter.
             """
-            self.tree = SplayTree(arg)
+            self.tree = Tree(arg)
 
         else:
             """
-            When argument for constructor is an iterable like list, set etc. each element is inserted separately into 
+            When argument for constructor is an iterable like list, set etc. each element is inserted separately into
             an empty tree.
             """
-            self.tree = SplayTree()
-            for element in iter(arg):
+            self.tree = Tree()
+            for element in arg:
                 self.tree.insert(element)
 
     def __iter__(self):
         """
         This is necessary for the set to be iterable. Initializes a generator object which returns a new node every time
-        the
+        the set is iterated over.
         :return: Returns a copy of the set to enable nested loops over the same set.
         """
         new_set = self._clone()
@@ -51,6 +50,7 @@ class Set:
         """Invokes _next__ of the tree attribute.
         :return: The key of the next node in the tree.
         """
+
         nxt = next(self.tree)
         if nxt is not None:
             return nxt.key
@@ -76,7 +76,7 @@ class Set:
         """
         result = self.tree[key]
         if result is not None:
-            """This needs to be deep-copied in order not to change the elements in the map via the reference, but 
+            """This needs to be deep-copied in order not to change the elements in the map via the reference, but
             return the value as in SetlX.
             The index 2 from key implies stands for the value as key-value-pairs are represented as lists of length 2"""
             return copy.deepcopy(result.key[2])
@@ -145,7 +145,7 @@ class Set:
             raise TypeError("sets can only be joined with sets")
         new_set = self._clone()
         for element in other:
-            new_set.insert(element)
+            new_set._insert(element)
         return new_set
 
     def __sub__(self, other):
@@ -202,7 +202,7 @@ class Set:
     def power_set(self):
         """SetlX equivalent to 2** set. Computes the powerset of the set."""
         if self._is_empty():
-            return Set(Set())
+            return Set([Set()])
 
         copy_set = self._clone()
 
@@ -213,13 +213,13 @@ class Set:
         result = Set()
 
         for item in power_set:
-            result += Set(Set(element) + item) + Set(item)
+            result += Set([Set([element]) + item]) + Set([item])
         return result
 
     def __eq__(self, other):
         """Determines if two sets are equal. Also works if tree is structured differently."""
         try:
-            """Checks if other is not None. A check other == None would result in an endless loop. Therefore, this 
+            """Checks if other is not None. A check other == None would result in an endless loop. Therefore, this
             try-except block is necessary."""
             _ = other.tree
         except AttributeError:
@@ -227,19 +227,26 @@ class Set:
         return self.tree == other.tree
 
     def __le__(self, other):
-        """Checks if sets are equal or all elements are smaller than other."""
+        """Checks if self is subset from other or equal."""
         if other is not None and self is not None:
-            return self.tree <= other.tree
+            return self < other or self == other
         return False
 
     def __lt__(self, other):
-        """Checks if all elements are smaller """
+        """Checks if self is subset from other."""
         if self.tree is None:
             return True
         if other is None or other.tree is None:
             return False
+
+        if len(self) >= len(other):
+            return False
+
         if self.tree is not None and other.tree is not None:
-            return self.tree < other.tree
+            for x in self:
+                if x not in other:
+                    return False
+            return True
         return False
 
     def __gt__(self, other):
@@ -265,7 +272,7 @@ class Set:
         """
         self.tree.delete(key)
 
-    def insert(self, key):
+    def _insert(self, key):
         """Inserts an element with the
         :param key
         """
@@ -273,7 +280,7 @@ class Set:
 
     def clear(self):
         """Returns an empty set."""
-        self.tree = SplayTree()
+        self.tree = Tree()
 
     def __rnd__(self):
         """:returns a random element in the set."""
@@ -284,20 +291,32 @@ class Set:
 
     def __domain__(self):
         """:returns a set of all keys if set is used as a map"""
-        if not self.tree.is_map:
-            raise Exception(f"{self} is not a map")
+        # if not self.tree.is_map:
+        #     raise Exception(f"{self} is not a map")
+        d = Set()
+        for k in self:
+            try:
+                if len(k) == 2:
+                    k = k[1]
+            except TypeError:
+                pass
+            d += Set(k)
 
-        return Set(k[1] for k in self)
+        return d
 
     def __range__(self):
         """:returns a set of all values if set is used as a map"""
-        if not self.tree.is_map:
-            raise Exception(f"{self} is not a map")
-
-        new_set = Set()
-        for s in self:
-            new_set += s[2]
-        return new_set
+        # if not self.tree.is_map:
+        #     raise Exception(f"{self} is not a map")
+        r = Set()
+        for k in self:
+            try:
+                if len(k) == 2:
+                    k = k[2]
+                    r += Set(k)
+            except TypeError:
+                raise NotAMapError("%s is not a map." % str(self))
+        return r
 
     def _is_empty(self):
         """:returns if the set does not contain any values"""

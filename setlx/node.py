@@ -1,10 +1,39 @@
-from setlx import list
+from types import GeneratorType
+
+
+class NotAMapError(Exception):
+    pass
 
 
 class _Key:
     """This class provides the possibility to compare objects of any type with each other by comparing the string of the
     type name if they are different, else the usual comparison operation between both objects are invoked.
     """
+    @staticmethod
+    def _compare_to(first, second):
+        """Compares two sets lexicographically. the i-th element of each set is compared. Once the two elements differ
+        the outcome is determined by which of the two elements is greater.
+
+        :param other: The other tree (set) which should be compared to self.
+        :return: 1 if self < other, 0 self == other, -1 self > other
+        """
+        if first is None and second is None:
+            return 0
+        if first is None:  # left set is empty
+            return 1
+        if second is None:  # right set is empty and left set is not
+            return - 1
+
+        if second is not None and first is not None:
+            for f, s in zip(first, second):
+                if f == s:
+                    continue
+                return 1 if _Key(f) < _Key(s) else -1
+            if len(first) < len(second):  # which one has more elements
+                return 1
+            if len(first) > len(second):  # which one has more elements
+                return -1
+        return 0
 
     def __init__(self, key):
         if type(key) == _Key:  # prevent nested keys in recursive calls
@@ -13,18 +42,35 @@ class _Key:
             self.key = key
 
     def __eq__(self, other):
-        if not isinstance(other, type(other.key)):
-            return self.key == other.key
+        if isinstance(self.key, type(other.key)):
+            if isinstance(self.key, str):
+                return self.key == other.key
+            try:
+                return _Key._compare_to(self.key, other.key) == 0
+            except TypeError:
+                return self.key == other.key
         return str(type(self.key)) == str(type(other.key))
 
     def __le__(self, other):
         if isinstance(self.key, type(other.key)):
-            return self.key <= other.key
+            try:
+                if isinstance(self.key, str):
+                    return self.key <= other.key
+                comp_res = _Key._compare_to(self.key, other.key)
+                return comp_res == 1 or comp_res == 0
+            except TypeError:
+                return self.key <= other.key
         return str(type(self.key)) < str(type(other.key)) or str(type(self.key)) == str(type(other.key))
 
     def __lt__(self, other):
-        if not isinstance(other, type(other.key)):
-            return self.key < other.key
+        if isinstance(self.key, type(other.key)):
+            try:
+                if isinstance(self.key, str):
+                    return self.key <= other.key
+                comp_res = _Key._compare_to(self.key, other.key)
+                return comp_res == 1
+            except TypeError:
+                return self.key < other.key
         return str(type(self.key)) < str(type(other.key))
 
     def __gt__(self, other):
@@ -80,22 +126,28 @@ class Node:
 
     def __getitem__(self, key):
         """
-
         :return: Corresponding key for value. None if the set does not represent a functional relation
         """
         results = []
-        for node in self.traverse():
-            if key == node.key[1]:
-                results.append(node)
-            if len(results) > 1:
-                return None
-        if len(results) != 1:
-            return None
-        else:
-            return results[0]
-        # returns None if Node got no value
+        for node in self.traverse_key(key):
+            try:
+                l = len(node.key)
+                if node.key == key or(l == 1 and key == node.key[1]):
+                    """Case: Single element in set."""
+                    return None
+                if l == 2 and key == node.key[1]:
+                    """Only case, where a map applies."""
+                    results.append(node)
+                if l > 2:
+                    raise NotAMapError("".join((str(self), "is not a map.")))
+                if len(results) > 1:
+                    return None
+            except TypeError:
+                """Case: Element is no iterable type, hence no item can be found."""
+                continue
+        return results[0] if len(results) == 1 else None
 
-    def insert(self, node):
+    def insert(self, node, handle_map=False):
         """Inserts an object of type Node into the Tree.
 
         :param node: Instance of the node class passed from class Tree
@@ -104,6 +156,17 @@ class Node:
         # make keys comparable
         node_key = _Key(node.key)
         self_key = _Key(self.key)
+
+        if handle_map:
+            k_self = self.key[1]
+            k_node = node.key[1]
+            if k_self == k_node:
+                self.key[2] = node.key[2]
+                return 0
+
+        # if node_key == self_key:
+        #     self.key = node.key
+        #     return 0
 
         if node_key < self_key:
             if self.left is not None:
@@ -119,7 +182,6 @@ class Node:
                 return self.right.insert(node)
             self.right = node
             return 1
-
         return 0
 
     def find(self, key):
@@ -244,6 +306,19 @@ class Node:
 
     def __ge__(self, other):
         return _Key(self.key) >= _Key(other.key)
+
+    def traverse_key(self, key):
+        """Traverses the tree from the node downwards. This used for searching a key. Only the elements which are relevant are visited. 
+         The elements are yielded in ascending order.
+        """
+        s_key = _Key(self)
+        k_key = _Key(key)
+
+        if k_key < s_key and self.left is not None:
+            yield from self.left.traverse_key(k_key)
+        yield self
+        if k_key > s_key and self.right is not None:
+            yield from self.right.traverse_key(k_key)
 
     def traverse(self):
         """Traverses the tree from the node downwards. Each element is yielded on the __next__ call on the returned
