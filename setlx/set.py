@@ -5,6 +5,7 @@ from types import GeneratorType
 from setlx.list import List
 from setlx.tree import Tree
 from setlx.node import NotAMapError
+from collections import Counter
 
 
 class Set:
@@ -331,3 +332,6 @@ class Set:
             if size >= 2:
                 _hash = _hash * 31 + hash(self.last())
         return _hash
+
+    def collect(self,key):
+        return Set([i[2] for i in self if isinstance(i,List) and i[1]==key])
