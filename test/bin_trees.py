@@ -47,7 +47,7 @@ def rnd_tree_gen(dim) -> (tree, List):
     t = tree.Tree(node.Node(root))
     random_range = random_range[1:]
     for r in random_range:
-        t.insert(node.Node(r))
+        t._insert(node.Node(r))
     random.Random(SEED).shuffle(random_range)
     random_range.append(root)
     random.Random(SEED).shuffle(random_range)

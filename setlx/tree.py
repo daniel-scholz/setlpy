@@ -19,9 +19,10 @@ class Tree:
 
         :param key: The tree is initialized with these element(s).
         """
+        self.iterator = None
         self.root = None
         self.total = 0
-        self.is_map = False
+        # self.is_map = False
         if key is not None:
             self.insert(key)  # ensures that total count is correct
 
@@ -38,29 +39,41 @@ class Tree:
 
     def __next__(self):
         """Returns the next element in the tree by yielding the next element from the iterator."""
+
+        if self.iterator == None:
+            self.iterator = self.traverse()
+
         return self.iterator.__next__()
 
     """  The following two functions are implemented to provide the map feature"""
 
     def __getitem__(self, key):
-        if not self.is_map:
-            return None
+        # if not self.is_map:
+        #     return None
         return self.root[key]
 
     def __setitem__(self, key, value):
-        if not self.is_map:
-            return
-        for item in self:
-           if item is not None and item.key[1] == key:
-               self.delete(item.key)
+        # if not self.is_map:
+        #     return
+        for item in self.traverse_key(key):
+            if item is not None and item.key[1] == key:
+                self.delete(item.key)
 
         self.insert(List([key, value]))
 
     """"""
 
     def _clone(self):
-        """:returns a copy of the current tree."""
-        return copy.deepcopy(self)
+        """:returns a copy of the current tree.
+        Copies elementwise to avoid deepcopying generator object self.iterator"""
+
+        new_tree = Tree()
+        new_tree.root = copy.deepcopy(self.root)
+        # new_tree.is_map = copy.deepcopy(self.is_map)
+        new_tree.total = copy.deepcopy(self.total)
+        # reset iterator
+        new_tree.iterator = None
+        return new_tree
 
     def insert(self, key):
         """Inserts new node into tree while incrementing the total count, to keep track of the total elements in the tree.
@@ -72,10 +85,12 @@ class Tree:
             key, Node) else key  # checks if insert is called from splaynode class
         if isinstance(node.key, list) and len(node.key) == 2:
             # flag needs to be set to True when map element is inserted
-            self.is_map = True
+            # self.is_map = True
+            pass
         else:
             # flag needs to be set to False when non map element is inserted
-            self.is_map = False
+            # self.is_map = False
+            pass
         if self.root is None:
             # Inserted element becomes root
             self.root = node
@@ -143,6 +158,12 @@ class Tree:
             return None
         yield from self.root.traverse()
 
+    def traverse_key(self, key):
+        """starts traversing the tree from the root downwards. """
+        if self.root is None:
+            return None
+        yield from self.root.traverse_key(key)
+
     def __le__(self, other):  # a.k.a. is_subset
         """:returns if the sets are equal or self < other"""
         return self.__eq__(other) or self.__lt__(other)
@@ -173,7 +194,7 @@ class Tree:
             return 1
         if other.root is None:  # right set is empty and left set is not
             return - 1
-            
+
         if other.root is not None and self.root is not None:
             for self_node, other_node in zip(self, other):
                 if self_node.key == other_node.key:

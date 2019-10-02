@@ -15,6 +15,9 @@ class SetlXClass(object):
 
     def __eq__(self,other):
         """ compares the members of the class that are not a function """
-        self_vars = [v for v in self.__dict__.values() if not callable(v)]
-        other_vars = [v for v in other.__dict__.values() if not callable(v)]
-        return self_vars == other_vars
+        if isinstance(other, SetlXClass):
+            self_vars = [v for v in self.__dict__.values() if not callable(v)]
+            other_vars = [v for v in other.__dict__.values() if not callable(v)]
+            return self_vars == other_vars
+        else:
+             return False

@@ -1,10 +1,10 @@
 from itertools import product as _product
 from functools import reduce
-
+from .set import Set
 
 def cartesian_product(*iterables):
     # TODO enable overriding for vectors and matrices
-    return _product(*[tuple(i) for i in iterables])
+    return Set(list(_product(*[tuple(i) for i in iterables])))
 
 
 _sum = sum
